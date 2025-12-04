@@ -1,0 +1,673 @@
+{% extends 'mi_app/base.html' %}
+{% load static %}
+
+{% block title %}Consumo Mensual - Voltify Pro{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <div class="flex items-center">
+                <a href="{% url 'inicio' %}" class="flex items-center group">
+                    <div class="text-2xl mr-2 transition-transform group-hover:scale-110">⚡</div>
+                    <div class="text-xl font-bold text-gray-800 dark:text-white">Voltify <span class="text-blue-600">Pro</span></div>
+                </a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="{% url 'inicio' %}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Main Content -->
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header Section -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">
+            Configuración del Servicio Eléctrico
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300">
+            Configura los datos de tu compañía eléctrica para cálculos precisos
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Formulario de Configuración -->
+        <div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6">
+                    Datos de tu Servicio
+                </h2>
+
+                <!-- Compañía Eléctrica -->
+                <div class="mb-8">
+                    <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                        Compañía de Servicio Eléctrico
+                    </label>
+                    <select id="companiaSelect" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">Selecciona tu compañía...</option>
+                        <option value="enel">Enel Distribución</option>
+                        <option value="chilquinta">Chilquinta Energía</option>
+                        <option value="frontel">Frontel</option>
+                        <option value="saesa">Saesa</option>
+                        <option value="cge">CGE</option>
+                        <option value="lit">Luz del Sur (LIT)</option>
+                        <option value="other">Otra compañía...</option>
+                    </select>
+                    
+                    <!-- Campo para otra compañía -->
+                    <div id="otraCompaniaContainer" class="mt-3 hidden">
+                        <input type="text" id="otraCompania" placeholder="Nombre de tu compañía eléctrica" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                </div>
+
+                <!-- Potencia Contratada -->
+                <div class="mb-8">
+                    <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                        Potencia Contratada (kW)
+                    </label>
+                    <div class="flex items-center space-x-4">
+                        <input type="number" 
+                               id="potenciaInput"
+                               step="0.1"
+                               min="1"
+                               max="20"
+                               class="w-32 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               style="-moz-appearance: textfield; -webkit-appearance: none; appearance: none;">
+                        <span class="text-gray-600 dark:text-gray-400 text-sm">kW (1.0 - 20.0 kW)</span>
+                    </div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                        Esta información se autocompleta según tu compañía, pero puedes modificarla
+                    </p>
+                </div>
+
+                <!-- Información de Tarifas -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Cargo Fijo -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                            Cargo Fijo Mensual
+                        </label>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-2xl">$</span>
+                            <input type="number" 
+                                   id="cargoFijoInput"
+                                   step="100"
+                                   min="0"
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <span class="text-gray-600 dark:text-gray-400 whitespace-nowrap">CLP/mes</span>
+                        </div>
+                    </div>
+
+                    <!-- Precio kWh -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                            Precio por kWh
+                        </label>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-2xl">$</span>
+                            <input type="number" 
+                                   id="precioKwhInput"
+                                   step="1"
+                                   min="0"
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <span class="text-gray-600 dark:text-gray-400 whitespace-nowrap">CLP/kWh</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="flex space-x-4 mb-6">
+                    <button id="btnGuardarConfig" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold text-lg transition-colors duration-300 flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Guardar Configuración
+                    </button>
+                    <button id="btnAutoCompletar" class="bg-gray-600 hover:bg-gray-700 text-white py-3 px-4 rounded-lg font-semibold text-lg transition-colors duration-300 flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Auto
+                    </button>
+                </div>
+
+                <!-- Botón Seleccionar Electrodomésticos -->
+                <div>
+                    <a href="{% url 'seleccionar_artefacto_hogar' %}" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg font-semibold text-lg transition-colors duration-300 flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                        Seleccionar Electrodomésticos
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Información - "¿Sabías que...?" -->
+        <div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 sticky top-8">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
+                    💡 ¿Sabías que...?
+                </h2>
+
+                <!-- Información por Campo -->
+                <div class="space-y-6">
+                    <!-- Compañía Eléctrica -->
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 dark:bg-blue-800 p-2 rounded-lg mr-3">
+                                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">Sobre las Compañías Eléctricas</h3>
+                                <p class="text-blue-700 dark:text-blue-300 text-sm">
+                                    En Chile existen 6 distribuidoras principales que cubren diferentes zonas del país. 
+                                    Cada una tiene tarifas específicas según la región y el tipo de cliente.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Potencia Contratada -->
+                    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <div class="bg-green-100 dark:bg-green-800 p-2 rounded-lg mr-3">
+                                <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-green-800 dark:text-green-200 mb-2">Sobre la Potencia Contratada</h3>
+                                <p class="text-green-700 dark:text-green-300 text-sm">
+                                    La potencia contratada determina cuántos aparatos puedes usar simultáneamente. 
+                                    Si excedes esta potencia, puede saltar el interruptor automático de tu hogar.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Precio kWh -->
+                    <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 dark:bg-purple-800 p-2 rounded-lg mr-3">
+                                <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-purple-800 dark:text-purple-200 mb-2">Sobre el Precio del kWh</h3>
+                                <p class="text-purple-700 dark:text-purple-300 text-sm">
+                                    El kilowatt-hora (kWh) es la unidad que mide tu consumo real de energía. 
+                                    Un refrigerador moderno consume aproximadamente 1-2 kWh por día, 
+                                    mientras que un aire acondicionado puede usar 3-5 kWh por hora.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cargo Fijo -->
+                    <div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <div class="bg-orange-100 dark:bg-orange-800 p-2 rounded-lg mr-3">
+                                <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-orange-800 dark:text-orange-200 mb-2">Sobre el Cargo Fijo</h3>
+                                <p class="text-orange-700 dark:text-orange-300 text-sm">
+                                    Este cargo cubre los costos de distribución, mantenimiento de la red 
+                                    y medición. Se paga mensualmente independientemente de tu consumo, 
+                                    por eso aparece incluso cuando no usas electricidad.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información de Configuración Guardada -->
+                <div id="configGuardada" class="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg hidden">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="text-green-800 dark:text-green-200 text-sm">Configuración guardada correctamente</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-8 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="flex items-center justify-center mb-4">
+            <div class="text-2xl mr-2">⚡</div>
+            <div class="text-xl font-bold">Voltify Pro</div>
+        </div>
+        <p class="text-gray-400">
+            Control de energía inteligente para hogares chilenos
+        </p>
+        <div class="mt-4 text-sm text-gray-400">
+            <p>&copy; 2025 Voltify Pro. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Base de datos de compañías eléctricas chilenas con datos REALES promedio
+    const companiasElectricas = {
+        'enel': { 
+            nombre: 'Enel Distribución',
+            potenciaPromedio: 4.4,
+            datosReales: {
+                potencia: 4.4,
+                cargoFijo: 4725,
+                precioKwh: 114
+            },
+            tarifas: {
+                '1.0': { cargoFijo: 945, precioKwh: 124 },
+                '1.5': { cargoFijo: 1418, precioKwh: 123 },
+                '2.0': { cargoFijo: 1890, precioKwh: 120 },
+                '2.5': { cargoFijo: 2363, precioKwh: 119 },
+                '3.0': { cargoFijo: 2835, precioKwh: 118 },
+                '3.5': { cargoFijo: 3308, precioKwh: 117 },
+                '4.0': { cargoFijo: 3780, precioKwh: 116 },
+                '4.4': { cargoFijo: 4725, precioKwh: 114 },
+                '5.0': { cargoFijo: 4725, precioKwh: 114 },
+                '5.5': { cargoFijo: 5198, precioKwh: 113 },
+                '6.0': { cargoFijo: 5670, precioKwh: 112 },
+                '7.0': { cargoFijo: 6615, precioKwh: 110 },
+                '8.0': { cargoFijo: 7560, precioKwh: 108 },
+                '9.0': { cargoFijo: 8505, precioKwh: 106 },
+                '10.0': { cargoFijo: 9450, precioKwh: 104 }
+            }
+        },
+        'chilquinta': { 
+            nombre: 'Chilquinta Energía',
+            potenciaPromedio: 3.3,
+            datosReales: {
+                potencia: 3.3,
+                cargoFijo: 2925,
+                precioKwh: 123
+            },
+            tarifas: {
+                '1.0': { cargoFijo: 975, precioKwh: 129 },
+                '1.5': { cargoFijo: 1463, precioKwh: 128 },
+                '2.0': { cargoFijo: 1950, precioKwh: 125 },
+                '2.5': { cargoFijo: 2438, precioKwh: 124 },
+                '3.0': { cargoFijo: 2925, precioKwh: 123 },
+                '3.3': { cargoFijo: 2925, precioKwh: 123 },
+                '3.5': { cargoFijo: 3413, precioKwh: 122 },
+                '4.0': { cargoFijo: 3900, precioKwh: 121 },
+                '4.5': { cargoFijo: 4388, precioKwh: 120 },
+                '5.0': { cargoFijo: 4875, precioKwh: 119 },
+                '6.0': { cargoFijo: 5850, precioKwh: 117 },
+                '7.0': { cargoFijo: 6825, precioKwh: 115 },
+                '8.0': { cargoFijo: 7800, precioKwh: 113 },
+                '9.0': { cargoFijo: 8775, precioKwh: 111 },
+                '10.0': { cargoFijo: 9750, precioKwh: 109 }
+            }
+        },
+        'frontel': { 
+            nombre: 'Frontel',
+            potenciaPromedio: 2.2,
+            datosReales: {
+                potencia: 2.2,
+                cargoFijo: 2100,
+                precioKwh: 130
+            },
+            tarifas: {
+                '1.0': { cargoFijo: 1050, precioKwh: 134 },
+                '1.5': { cargoFijo: 1575, precioKwh: 133 },
+                '2.0': { cargoFijo: 2100, precioKwh: 130 },
+                '2.2': { cargoFijo: 2100, precioKwh: 130 },
+                '2.5': { cargoFijo: 2625, precioKwh: 129 },
+                '3.0': { cargoFijo: 3150, precioKwh: 128 },
+                '3.5': { cargoFijo: 3675, precioKwh: 127 },
+                '4.0': { cargoFijo: 4200, precioKwh: 126 },
+                '4.5': { cargoFijo: 4725, precioKwh: 125 },
+                '5.0': { cargoFijo: 5250, precioKwh: 124 },
+                '6.0': { cargoFijo: 6300, precioKwh: 122 },
+                '7.0': { cargoFijo: 7350, precioKwh: 120 },
+                '8.0': { cargoFijo: 8400, precioKwh: 118 },
+                '9.0': { cargoFijo: 9450, precioKwh: 116 },
+                '10.0': { cargoFijo: 10500, precioKwh: 114 }
+            }
+        },
+        'saesa': { 
+            nombre: 'Saesa',
+            potenciaPromedio: 3.0,
+            datosReales: {
+                potencia: 3.0,
+                cargoFijo: 3000,
+                precioKwh: 123
+            },
+            tarifas: {
+                '1.0': { cargoFijo: 1000, precioKwh: 129 },
+                '1.5': { cargoFijo: 1500, precioKwh: 127 },
+                '2.0': { cargoFijo: 2000, precioKwh: 125 },
+                '2.5': { cargoFijo: 2500, precioKwh: 124 },
+                '3.0': { cargoFijo: 3000, precioKwh: 123 },
+                '3.5': { cargoFijo: 3500, precioKwh: 122 },
+                '4.0': { cargoFijo: 4000, precioKwh: 121 },
+                '4.5': { cargoFijo: 4500, precioKwh: 120 },
+                '5.0': { cargoFijo: 5000, precioKwh: 119 },
+                '6.0': { cargoFijo: 6000, precioKwh: 117 },
+                '7.0': { cargoFijo: 7000, precioKwh: 115 },
+                '8.0': { cargoFijo: 8000, precioKwh: 113 },
+                '9.0': { cargoFijo: 9000, precioKwh: 111 },
+                '10.0': { cargoFijo: 10000, precioKwh: 109 }
+            }
+        },
+        'cge': { 
+            nombre: 'CGE',
+            potenciaPromedio: 4.0,
+            datosReales: {
+                potencia: 4.0,
+                cargoFijo: 4100,
+                precioKwh: 118
+            },
+            tarifas: {
+                '1.0': { cargoFijo: 1025, precioKwh: 126 },
+                '1.5': { cargoFijo: 1538, precioKwh: 125 },
+                '2.0': { cargoFijo: 2050, precioKwh: 122 },
+                '2.5': { cargoFijo: 2563, precioKwh: 121 },
+                '3.0': { cargoFijo: 3075, precioKwh: 120 },
+                '3.5': { cargoFijo: 3588, precioKwh: 119 },
+                '4.0': { cargoFijo: 4100, precioKwh: 118 },
+                '4.5': { cargoFijo: 4613, precioKwh: 117 },
+                '5.0': { cargoFijo: 5125, precioKwh: 116 },
+                '6.0': { cargoFijo: 6150, precioKwh: 114 },
+                '7.0': { cargoFijo: 7175, precioKwh: 112 },
+                '8.0': { cargoFijo: 8200, precioKwh: 110 },
+                '9.0': { cargoFijo: 9225, precioKwh: 108 },
+                '10.0': { cargoFijo: 10250, precioKwh: 106 }
+            }
+        },
+        'lit': { 
+            nombre: 'Luz del Sur (LIT)',
+            potenciaPromedio: 3.6,
+            datosReales: {
+                potencia: 3.6,
+                cargoFijo: 3960,
+                precioKwh: 132
+            },
+            tarifas: {
+                '1.0': { cargoFijo: 1100, precioKwh: 139 },
+                '1.5': { cargoFijo: 1650, precioKwh: 138 },
+                '2.0': { cargoFijo: 2200, precioKwh: 135 },
+                '2.5': { cargoFijo: 2750, precioKwh: 134 },
+                '3.0': { cargoFijo: 3300, precioKwh: 133 },
+                '3.6': { cargoFijo: 3960, precioKwh: 132 },
+                '4.0': { cargoFijo: 4400, precioKwh: 131 },
+                '4.5': { cargoFijo: 4950, precioKwh: 130 },
+                '5.0': { cargoFijo: 5500, precioKwh: 129 },
+                '6.0': { cargoFijo: 6600, precioKwh: 127 },
+                '7.0': { cargoFijo: 7700, precioKwh: 125 },
+                '8.0': { cargoFijo: 8800, precioKwh: 123 },
+                '9.0': { cargoFijo: 9900, precioKwh: 121 },
+                '10.0': { cargoFijo: 11000, precioKwh: 119 }
+            }
+        },
+        'other': { 
+            nombre: 'Otra compañía',
+            potenciaPromedio: 3.0,
+            datosReales: {
+                potencia: 3.0,
+                cargoFijo: 3000,
+                precioKwh: 125
+            },
+            tarifas: {
+                '1.0': { cargoFijo: 1000, precioKwh: 129 },
+                '1.5': { cargoFijo: 1500, precioKwh: 127 },
+                '2.0': { cargoFijo: 2000, precioKwh: 125 },
+                '2.5': { cargoFijo: 2500, precioKwh: 124 },
+                '3.0': { cargoFijo: 3000, precioKwh: 123 },
+                '3.5': { cargoFijo: 3500, precioKwh: 122 },
+                '4.0': { cargoFijo: 4000, precioKwh: 121 },
+                '4.5': { cargoFijo: 4500, precioKwh: 120 },
+                '5.0': { cargoFijo: 5000, precioKwh: 119 },
+                '6.0': { cargoFijo: 6000, precioKwh: 117 },
+                '7.0': { cargoFijo: 7000, precioKwh: 115 },
+                '8.0': { cargoFijo: 8000, precioKwh: 113 },
+                '9.0': { cargoFijo: 9000, precioKwh: 111 },
+                '10.0': { cargoFijo: 10000, precioKwh: 109 }
+            }
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const companiaSelect = document.getElementById('companiaSelect');
+        const otraCompaniaContainer = document.getElementById('otraCompaniaContainer');
+        const potenciaInput = document.getElementById('potenciaInput');
+        const cargoFijoInput = document.getElementById('cargoFijoInput');
+        const precioKwhInput = document.getElementById('precioKwhInput');
+        const btnGuardarConfig = document.getElementById('btnGuardarConfig');
+        const btnAutoCompletar = document.getElementById('btnAutoCompletar');
+        const configGuardada = document.getElementById('configGuardada');
+
+        // Variables para controlar si los campos fueron editados manualmente
+        let cargoFijoEditado = false;
+        let precioKwhEditado = false;
+
+        // Función para obtener el ID del usuario actual
+        function getCurrentUserId() {
+            return '{{ user.username|default:"anonymous" }}';
+        }
+
+        // Cargar configuración guardada
+        cargarConfiguracionGuardada();
+
+        // Cuando se cambia la compañía, autocompletar con datos reales
+        companiaSelect.addEventListener('change', function() {
+            if (this.value === 'other') {
+                otraCompaniaContainer.classList.remove('hidden');
+                // No autocompletar para "Otra compañía"
+            } else if (this.value) {
+                otraCompaniaContainer.classList.add('hidden');
+                // Solo autocompletar si los campos no fueron editados manualmente
+                if (!cargoFijoEditado && !precioKwhEditado) {
+                    autocompletarDatosReales(this.value);
+                }
+            }
+        });
+
+        // Actualizar tarifas cuando cambia la potencia
+        potenciaInput.addEventListener('input', function() {
+            actualizarTarifasSegunPotencia();
+        });
+
+        // Marcar campos como editados manualmente
+        cargoFijoInput.addEventListener('input', function() {
+            cargoFijoEditado = true;
+        });
+
+        precioKwhInput.addEventListener('input', function() {
+            precioKwhEditado = true;
+        });
+
+        // Quitar los spinners (botones de subir/bajar) del input de potencia
+        potenciaInput.addEventListener('wheel', function(e) {
+            e.preventDefault();
+        });
+
+        // Prevenir el cambio con las flechas del teclado
+        potenciaInput.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                e.preventDefault();
+            }
+        });
+
+        // Guardar configuración
+        btnGuardarConfig.addEventListener('click', guardarConfiguracion);
+
+        // Autocompletar valores automáticos (predeterminados)
+        btnAutoCompletar.addEventListener('click', function() {
+            const compania = companiaSelect.value;
+            
+            // Si no hay compañía seleccionada, mostrar alerta
+            if (!compania) {
+                alert('Por favor selecciona una compañía eléctrica primero');
+                return;
+            }
+            
+            // Resetear flags de edición manual
+            cargoFijoEditado = false;
+            precioKwhEditado = false;
+            
+            // Obtener datos de la compañía seleccionada
+            const companiaData = companiasElectricas[compania];
+            
+            if (companiaData) {
+                // 1. Establecer potencia contratada predeterminada (2.0 kW)
+                potenciaInput.value = '2.0';
+                
+                // 2. Calcular y establecer cargo fijo y precio kWh para 2.0 kW
+                actualizarTarifasSegunPotencia();
+            }
+        });
+
+        function autocompletarDatosReales(compania) {
+            const companiaData = companiasElectricas[compania];
+            
+            if (companiaData && companiaData.datosReales) {
+                // 1. Establecer potencia contratada promedio
+                potenciaInput.value = companiaData.datosReales.potencia;
+                
+                // 2. Establecer cargo fijo real
+                cargoFijoInput.value = companiaData.datosReales.cargoFijo;
+                
+                // 3. Establecer precio kWh real
+                precioKwhInput.value = companiaData.datosReales.precioKwh;
+            }
+        }
+
+        function actualizarTarifasSegunPotencia() {
+            const compania = companiaSelect.value;
+            const potencia = parseFloat(potenciaInput.value) || 2.0;
+            
+            if (compania && companiasElectricas[compania]) {
+                // Asegurar que la potencia esté dentro de los límites válidos (1.0 - 10.0)
+                let potenciaAjustada = Math.max(1.0, Math.min(10.0, potencia));
+                
+                // Redondear al múltiplo de 0.5 más cercano
+                let potenciaRedondeada = Math.round(potenciaAjustada * 2) / 2;
+                
+                // Si no hay tarifa exacta, buscar la más cercana
+                potenciaRedondeada = encontrarPotenciaMasCercana(potenciaRedondeada, compania);
+                
+                // Actualizar el campo de potencia si es necesario
+                if (potencia !== potenciaRedondeada) {
+                    potenciaInput.value = potenciaRedondeada.toFixed(1);
+                }
+                
+                const tarifaKey = potenciaRedondeada.toFixed(1);
+                const tarifa = companiasElectricas[compania].tarifas[tarifaKey];
+                
+                if (tarifa) {
+                    // Solo actualizar si los campos no fueron editados manualmente
+                    if (!cargoFijoEditado) {
+                        cargoFijoInput.value = tarifa.cargoFijo;
+                    }
+                    if (!precioKwhEditado) {
+                        precioKwhInput.value = tarifa.precioKwh;
+                    }
+                }
+            }
+        }
+
+        function encontrarPotenciaMasCercana(potencia, compania) {
+            const tarifasDisponibles = Object.keys(companiasElectricas[compania].tarifas);
+            
+            // Convertir a números
+            const potencias = tarifasDisponibles.map(p => parseFloat(p));
+            
+            // Encontrar la potencia más cercana
+            let potenciaMasCercana = potencias[0];
+            let diferenciaMinima = Math.abs(potencias[0] - potencia);
+            
+            for (let i = 1; i < potencias.length; i++) {
+                const diferencia = Math.abs(potencias[i] - potencia);
+                if (diferencia < diferenciaMinima) {
+                    diferenciaMinima = diferencia;
+                    potenciaMasCercana = potencias[i];
+                }
+            }
+            
+            return potenciaMasCercana;
+        }
+
+        function guardarConfiguracion() {
+            const userId = getCurrentUserId();
+            const configuracion = {
+                compania: companiaSelect.value,
+                otraCompania: document.getElementById('otraCompania')?.value || '',
+                potencia: potenciaInput.value,
+                cargoFijo: cargoFijoInput.value,
+                precioKwh: precioKwhInput.value
+            };
+
+            localStorage.setItem(`voltify_configuracion_${userId}`, JSON.stringify(configuracion));
+            
+            // Mostrar confirmación
+            configGuardada.classList.remove('hidden');
+            setTimeout(() => {
+                configGuardada.classList.add('hidden');
+            }, 3000);
+        }
+
+        function cargarConfiguracionGuardada() {
+            const userId = getCurrentUserId();
+            const configGuardada = localStorage.getItem(`voltify_configuracion_${userId}`);
+            if (configGuardada) {
+                const config = JSON.parse(configGuardada);
+                
+                companiaSelect.value = config.compania || '';
+                if (config.compania === 'other') {
+                    otraCompaniaContainer.classList.remove('hidden');
+                    document.getElementById('otraCompania').value = config.otraCompania || '';
+                }
+                
+                potenciaInput.value = config.potencia || '2.0';
+                cargoFijoInput.value = config.cargoFijo || '';
+                precioKwhInput.value = config.precioKwh || '';
+                
+                // Marcar como editados si ya tenían valores guardados
+                if (config.cargoFijo) {
+                    cargoFijoEditado = true;
+                }
+                if (config.precioKwh) {
+                    precioKwhEditado = true;
+                }
+                
+                // Si hay compañía pero no datos, autocompletar con datos reales
+                if (config.compania && config.compania !== 'other' && 
+                    (!config.cargoFijo || !config.precioKwh)) {
+                    setTimeout(() => {
+                        autocompletarDatosReales(config.compania);
+                    }, 100);
+                }
+            } else {
+                // Si no hay configuración guardada, establecer valores predeterminados
+                potenciaInput.value = '2.0';
+            }
+        }
+
+        // Sincronizar cambios en tiempo real entre pestañas
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'voltify_configuracion') {
+                cargarConfiguracionGuardada();
+            }
+        });
+    });
+</script>
+{% endblock %}

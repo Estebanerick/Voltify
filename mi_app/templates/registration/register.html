@@ -1,0 +1,136 @@
+{% extends 'mi_app/base.html' %}
+
+{% block title %}Registro - Voltify Pro{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center transition-colors duration-200">
+    <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 p-8 transition-colors duration-200">
+        <div class="text-center mb-8">
+            <div class="text-4xl mb-4">⚡</div>
+            <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">Voltify Pro</h1>
+            <p class="text-gray-600 dark:text-gray-400">Crear nueva cuenta</p>
+        </div>
+
+        {% if form.errors %}
+        <div class="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3 rounded mb-4 transition-colors duration-200">
+            <strong>Por favor corrige los siguientes errores:</strong>
+            <ul class="mt-1 list-disc list-inside">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Nombre de usuario
+                    </label>
+                    <input type="text" name="username" 
+                           class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-gray-100 transition-colors duration-200"
+                           required placeholder="Elige un nombre de usuario"
+                           value="{{ form.username.value|default:'' }}">
+                    {% if form.username.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.username.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Contraseña
+                    </label>
+                    <div class="relative">
+                        <input type="password" name="password1" id="password1"
+                               class="w-full px-4 py-3 pr-12 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-gray-100 transition-colors duration-200"
+                               required placeholder="Crea una contraseña segura">
+                        <button type="button" id="togglePassword1" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                                onclick="togglePassword('password1', 'togglePassword1')"
+                                title="Mostrar contraseña">
+                            👁️‍🗨️
+                        </button>
+                    </div>
+                    {% if form.password1.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.password1.errors.0 }}</div>
+                    {% endif %}
+                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        • Mínimo 8 caracteres<br>
+                        • No puede ser solo números<br>
+                        • No puede ser muy común
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Confirmar contraseña
+                    </label>
+                    <div class="relative">
+                        <input type="password" name="password2" id="password2"
+                               class="w-full px-4 py-3 pr-12 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-gray-100 transition-colors duration-200"
+                               required placeholder="Repite tu contraseña">
+                        <button type="button" id="togglePassword2" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                                onclick="togglePassword('password2', 'togglePassword2')"
+                                title="Mostrar contraseña">
+                            👁️‍🗨️
+                        </button>
+                    </div>
+                    {% if form.password2.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.password2.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <button type="submit" 
+                    class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg mt-6 transition duration-200 transform hover:scale-105">
+                Crear Cuenta
+            </button>
+        </form>
+
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                ¿Ya tienes cuenta? 
+                <a href="{% url 'login' %}" class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors duration-200">
+                    Iniciar Sesión
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePassword(fieldId, buttonId) {
+        const passwordField = document.getElementById(fieldId);
+        const toggleButton = document.getElementById(buttonId);
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            toggleButton.innerHTML = '👁️';
+            toggleButton.title = 'Ocultar contraseña';
+        } else {
+            passwordField.type = 'password';
+            toggleButton.innerHTML = '👁️‍🗨️';
+            toggleButton.title = 'Mostrar contraseña';
+        }
+    }
+
+    // Agregar funcionalidad Enter para enviar el formulario
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.querySelector('form').submit();
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

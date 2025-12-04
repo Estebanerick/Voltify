@@ -1,0 +1,1468 @@
+[file name]: seleccionar_artefacto_hogar.html
+[file content begin]
+{% extends 'mi_app/base.html' %}
+{% load static %}
+
+{% block title %}Seleccionar Electrodomésticos del Hogar - Voltify Pro{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <div class="flex items-center">
+                <a href="{% url 'inicio' %}" class="flex items-center group">
+                    <div class="text-2xl mr-2 transition-transform group-hover:scale-110">⚡</div>
+                    <div class="text-xl font-bold text-gray-800 dark:text-white">Voltify <span class="text-blue-600">Pro</span></div>
+                </a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="{% url 'inicio' %}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header Section -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">
+            Electrodomésticos del Hogar
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300">
+            Selecciona y configura los electrodomésticos de tu hogar
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        <!-- Formulario de Selección -->
+        <div class="xl:col-span-1">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 sticky top-8">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6">
+                    Datos del Electrodoméstico
+                </h2>
+
+                <!-- Información de Servicio Eléctrico -->
+                <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-3">
+                        ⚡ Configuración de Servicio Eléctrico
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <span class="text-blue-700 dark:text-blue-300 font-medium">Compañía:</span>
+                            <span id="displayCompania" class="text-blue-800 dark:text-blue-200 ml-2">-</span>
+                        </div>
+                        <div>
+                            <span class="text-blue-700 dark:text-blue-300 font-medium">Potencia Contratada:</span>
+                            <span id="displayPotencia" class="text-blue-800 dark:text-blue-200 ml-2">- kW</span>
+                        </div>
+                        <div>
+                            <span class="text-blue-700 dark:text-blue-300 font-medium">Cargo Fijo:</span>
+                            <span id="displayCargoFijo" class="text-blue-800 dark:text-blue-200 ml-2">$ -/mes</span>
+                        </div>
+                        <div>
+                            <span class="text-blue-700 dark:text-blue-300 font-medium">Precio kWh:</span>
+                            <span id="displayPrecioKwh" class="text-blue-800 dark:text-blue-200 ml-2">$ -</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gestión de Electrodomésticos -->
+                <div class="mb-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700">
+                    <h3 class="text-lg font-semibold text-green-800 dark:text-green-200 mb-3">
+                        🛠️ Gestión de Electrodomésticos
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="btnCargarUltimoMes" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded-lg text-sm transition-colors flex items-center justify-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            Cargar Último Mes
+                        </button>
+                        <button id="btnLimpiarLista" class="bg-red-600 hover:bg-red-700 text-white py-2 px-3 rounded-lg text-sm transition-colors flex items-center justify-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            Limpiar Todo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Selección por Categoría -->
+                <div class="space-y-6">
+                    <!-- Categoría -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                            Categoría
+                        </label>
+                        <select id="categoriaSelect" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="">Selecciona una categoría...</option>
+                            <option value="climatizacion">Climatización</option>
+                            <option value="iluminacion">Iluminación</option>
+                            <option value="linea_blanca">Línea Blanca</option>
+                            <option value="tecnologia">Tecnología</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
+
+                    <!-- Nombre del Electrodoméstico -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                            Nombre del Electrodoméstico
+                        </label>
+                        <select id="electrodomesticoSelect" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent" disabled>
+                            <option value="">Primero selecciona una categoría</option>
+                        </select>
+                    </div>
+
+                    <!-- Cantidad -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                            Cantidad en el Hogar
+                        </label>
+                        <div class="flex items-center space-x-4">
+                            <input type="number" 
+                                   id="cantidadElectrodomestico"
+                                   step="1"
+                                   min="1"
+                                   max="20"
+                                   value="1"
+                                   class="w-32 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <span class="text-gray-600 dark:text-gray-400 text-sm">unidades (1-20)</span>
+                        </div>
+                    </div>
+
+                    <!-- Horas de Uso Diario -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                            Horas de Uso Diario
+                        </label>
+                        <div class="flex items-center space-x-4">
+                            <input type="number" 
+                                   id="horasUsoDiario"
+                                   step="0.5"
+                                   min="0"
+                                   max="24"
+                                   value="4"
+                                   class="w-32 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <span class="text-gray-600 dark:text-gray-400 text-sm">horas/día (0-24)</span>
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Máximo 24 horas por día</p>
+                    </div>
+
+                    <!-- Días de Uso Mensual -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                            Días de Uso Mensual
+                        </label>
+                        <div class="flex items-center space-x-4">
+                            <input type="number" 
+                                   id="diasUsoMensual"
+                                   step="1"
+                                   min="1"
+                                   max="31"
+                                   value="30"
+                                   class="w-32 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <span class="text-gray-600 dark:text-gray-400 text-sm">días/mes (1-31)</span>
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Máximo 31 días por mes</p>
+                    </div>
+
+                    <!-- Botón Agregar -->
+                    <button id="btnAgregar" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg font-semibold text-lg transition-colors duration-300 flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        Agregar Electrodoméstico
+                    </button>
+                </div>
+
+                <!-- Separador -->
+                <div class="my-8 border-t border-gray-200 dark:border-gray-600"></div>
+
+                <!-- Agregar Manualmente -->
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                        🔧 Agregar Manualmente
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <!-- Nombre Manual -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-800 dark:text-white mb-2">
+                                Nombre del Electrodoméstico
+                            </label>
+                            <input type="text" 
+                                   id="nombreManual"
+                                   placeholder="Ej: Mi electrodoméstico personalizado"
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+
+                        <!-- Categoría Manual -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-800 dark:text-white mb-2">
+                                Categoría
+                            </label>
+                            <select id="categoriaManual" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="climatizacion">Climatización</option>
+                                <option value="iluminacion">Iluminación</option>
+                                <option value="linea_blanca">Línea Blanca</option>
+                                <option value="tecnologia">Tecnología</option>
+                                <option value="otros">Otros</option>
+                            </select>
+                        </div>
+
+                        <!-- Potencia Manual -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-800 dark:text-white mb-2">
+                                Potencia (Watts)
+                            </label>
+                            <div class="flex items-center space-x-4">
+                                <input type="number" 
+                                       id="potenciaManual"
+                                       step="10"
+                                       min="1"
+                                       max="10000"
+                                       placeholder="Ej: 150"
+                                       class="w-32 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <span class="text-gray-600 dark:text-gray-400 text-sm">Watts (1-10000)</span>
+                            </div>
+                        </div>
+
+                        <!-- Cantidad Manual -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-800 dark:text-white mb-2">
+                                Cantidad
+                            </label>
+                            <div class="flex items-center space-x-4">
+                                <input type="number" 
+                                       id="cantidadManual"
+                                       step="1"
+                                       min="1"
+                                       max="20"
+                                       value="1"
+                                       class="w-32 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <span class="text-gray-600 dark:text-gray-400 text-sm">unidades (1-20)</span>
+                            </div>
+                        </div>
+
+                        <!-- Horas Manual -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-800 dark:text-white mb-2">
+                                Horas de Uso Diario
+                            </label>
+                            <div class="flex items-center space-x-4">
+                                <input type="number" 
+                                       id="horasManual"
+                                       step="0.5"
+                                       min="0"
+                                       max="24"
+                                       value="4"
+                                       class="w-32 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <span class="text-gray-600 dark:text-gray-400 text-sm">horas/día (0-24)</span>
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Máximo 24 horas por día</p>
+                        </div>
+
+                        <!-- Días Manual -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-800 dark:text-white mb-2">
+                                Días de Uso Mensual
+                            </label>
+                            <div class="flex items-center space-x-4">
+                                <input type="number" 
+                                       id="diasManual"
+                                       step="1"
+                                       min="1"
+                                       max="31"
+                                       value="30"
+                                       class="w-32 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <span class="text-gray-600 dark:text-gray-400 text-sm">días/mes (1-31)</span>
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Máximo 31 días por mes</p>
+                        </div>
+
+                        <!-- Botón Agregar Manual -->
+                        <button id="btnAgregarManual" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold text-lg transition-colors duration-300 flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            Agregar Manualmente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Central: Lista de Electrodomésticos y ¿Sabías que...? -->
+        <div class="xl:col-span-2">
+            <!-- Lista de Electrodomésticos Agregados -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 dark:text-white text-center flex-1">
+                        🏠 Electrodomésticos de tu Hogar
+                    </h2>
+                    <button id="btnLimpiarSeleccionados" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition-colors ml-4 hidden">
+                        <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Limpiar Todo
+                    </button>
+                </div>
+
+                <!-- Resumen de Consumo -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="totalElectrodomesticos">0</div>
+                        <div class="text-blue-700 dark:text-blue-300 text-sm">Electrodomésticos</div>
+                    </div>
+                    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-green-600 dark:text-green-400" id="totalConsumo">0</div>
+                        <div class="text-green-700 dark:text-green-300 text-sm">kWh/mes</div>
+                    </div>
+                    <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-purple-600 dark:text-purple-400" id="totalCosto">$0</div>
+                        <div class="text-purple-700 dark:text-purple-300 text-sm">Total a pagar</div>
+                    </div>
+                </div>
+
+                <!-- Lista -->
+                <div id="listaElectrodomesticos" class="space-y-4 mb-6">
+                    <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                        <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <p>No has agregado electrodomésticos aún</p>
+                        <p class="text-sm">Comienza seleccionando electrodomésticos de la lista</p>
+                    </div>
+                </div>
+
+                <!-- Resumen de Costos -->
+                <div id="resumenCostos" class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 hidden">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-3 text-center">
+                        💰 Resumen de Costos
+                    </h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600 dark:text-gray-400">Costo total electrodomésticos:</span>
+                            <span id="resumenCostoElectrodomesticos" class="text-gray-800 dark:text-gray-200 font-medium">$0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600 dark:text-gray-400">Cargo fijo:</span>
+                            <span id="resumenCargoFijo" class="text-gray-800 dark:text-gray-200 font-medium">$0</span>
+                        </div>
+                        <div class="flex justify-between border-t border-gray-300 dark:border-gray-600 pt-2">
+                            <span class="text-gray-800 dark:text-gray-200 font-semibold">Total a pagar:</span>
+                            <span id="resumenTotalPagar" class="text-green-600 dark:text-green-400 font-bold">$0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón Calcular Total -->
+                <div class="mt-6">
+                    <button id="btnCalcularTotal" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg font-semibold text-lg transition-colors duration-300 flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        Calcular Consumo Total del Hogar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Panel de Registro Mensual -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
+                    📅 Registrar Consumo Mensual
+                </h2>
+
+                <div class="space-y-6">
+                    <!-- Fecha -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                                Mes
+                            </label>
+                            <select id="mesSelect" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="1">Enero</option>
+                                <option value="2">Febrero</option>
+                                <option value="3">Marzo</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Mayo</option>
+                                <option value="6">Junio</option>
+                                <option value="7">Julio</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Septiembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Noviembre</option>
+                                <option value="12">Diciembre</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                                Año
+                            </label>
+                            <input type="number" 
+                                   id="anioInput"
+                                   min="2020"
+                                   max="2030"
+                                   value="2025"
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                    </div>
+
+                    <!-- Consumo Real -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                            Consumo Real (kWh)
+                        </label>
+                        <input type="number" 
+                               id="kwhRealInput"
+                               step="1"
+                               min="0"
+                               placeholder="Ingresa el consumo real del mes"
+                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+
+                    <!-- Total a Pagar -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                            Total a Pagar ($)
+                        </label>
+                        <input type="number" 
+                               id="totalPagarInput"
+                               step="100"
+                               min="0"
+                               placeholder="Ingresa el total a pagar"
+                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+
+                    <!-- Nota Opcional -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                            Nota (Opcional)
+                        </label>
+                        <textarea id="notaInput"
+                                  rows="3"
+                                  placeholder="Agrega alguna observación o nota sobre este mes..."
+                                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                    </div>
+
+                    <!-- Botón Registrar -->
+                    <button id="btnRegistrarMes" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold text-lg transition-colors duration-300 flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        Registrar Mes
+                    </button>
+                </div>
+            </div>
+
+            <!-- Panel de Información - "¿Sabías que...?" -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
+                    💡 ¿Sabías que...?
+                </h2>
+
+                <!-- Información Específica para Electrodomésticos del Hogar -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Consumo del Hogar -->
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 dark:bg-blue-800 p-2 rounded-lg mr-3">
+                                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">Suma de Potencias</h3>
+                                <p class="text-blue-700 dark:text-blue-300 text-sm">
+                                    Si todos tus electrodomésticos funcionaran a la vez, consumirían: 
+                                    Σ(Potencia × Cantidad) = Total Watts. Un hogar típico suma 8,000-12,000W, 
+                                    pero tu potencia contratada es solo 2,200-4,400W. ¡La matemática no miente!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Electrodomésticos Eficientes -->
+                    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <div class="bg-green-100 dark:bg-green-800 p-2 rounded-lg mr-3">
+                                <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-green-800 dark:text-green-200 mb-2">Eficiencia Exponencial</h3>
+                                <p class="text-green-700 dark:text-green-300 text-sm">
+                                    Cambiar 5 focos incandescentes (60W) por LED (9W) ahorra: 
+                                    (60-9)×5×4h×30d = 30,600 Wh/mes = 30.6 kWh. Eso son $3,672 mensuales. 
+                                    ¡En 1 año recuperas la inversión 3 veces!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Horarios Inteligentes -->
+                    <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 dark:bg-purple-800 p-2 rounded-lg mr-3">
+                                <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-purple-800 dark:text-purple-200 mb-2">Programación Óptima</h3>
+                                <p class="text-purple-700 dark:text-purple-300 text-sm">
+                                    Usar la lavadora 3 veces por semana en vez de diario ahorra: 
+                                    (500W × 2h × 4 días) × 4 semanas = 16 kWh/mes = $1,920. 
+                                    Es como obtener 1 mes gratis de electricidad cada año.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mantenimiento Preventivo -->
+                    <div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <div class="bg-orange-100 dark:bg-orange-800 p-2 rounded-lg mr-3">
+                                <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-orange-800 dark:text-orange-200 mb-2">Ley del Mantenimiento</h3>
+                                <p class="text-orange-700 dark:text-orange-300 text-sm">
+                                    Un refrigerador con sellos dañados consume 30% más: 
+                                    De 150W a 195W. Eso son (45W × 24h × 30d) = 32.4 kWh extra = $3,888 mensuales. 
+                                    ¡El mantenimiento cuesta menos que el derroche!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón Más Datos Curiosos -->
+                <div class="text-center mt-6">
+                    <a href="{% url 'sabias_que' %}" class="inline-block bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                        🧠 Más Datos Curiosos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-8 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="flex items-center justify-center mb-4">
+            <div class="text-2xl mr-2">⚡</div>
+            <div class="text-xl font-bold">Voltify Pro</div>
+        </div>
+        <p class="text-gray-400">
+            Control de energía inteligente para hogares chilenos
+        </p>
+        <div class="mt-4 text-sm text-gray-400">
+            <p>&copy; 2025 Voltify Pro. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Modal de Confirmación -->
+<div id="modalExito" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-sm mx-4">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2" id="modalTitulo">¡Éxito!</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4" id="modalMensaje">Mes registrado correctamente</p>
+            <button id="modalCerrar" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors">
+                Aceptar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Mes Duplicado -->
+<div id="modalDuplicado" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-sm mx-4">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Mes Ya Registrado</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4" id="modalDuplicadoMensaje">Ya existe un registro para este mes y año. ¿Deseas actualizarlo?</p>
+            <div class="flex space-x-3">
+                <button id="modalCancelar" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    Cancelar
+                </button>
+                <button id="modalActualizar" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Edición -->
+<div id="modalEditar" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md w-full mx-4">
+        <div class="text-center">
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Editar Electrodoméstico</h3>
+            
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-800 dark:text-white mb-2">
+                        Nombre
+                    </label>
+                    <input type="text" id="editNombre" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-800 dark:text-white mb-2">
+                            Potencia (W)
+                        </label>
+                        <input type="number" id="editPotencia" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-800 dark:text-white mb-2">
+                            Cantidad
+                        </label>
+                        <input type="number" id="editCantidad" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-800 dark:text-white mb-2">
+                            Horas/día
+                        </label>
+                        <input type="number" step="0.5" id="editHoras" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-800 dark:text-white mb-2">
+                            Días/mes
+                        </label>
+                        <input type="number" id="editDias" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex space-x-3 mt-6">
+                <button id="modalEditarCancelar" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    Cancelar
+                </button>
+                <button id="modalEditarGuardar" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Base de datos de electrodomésticos por categoría
+    const electrodomesticosDB = {
+        'climatizacion': [
+            { nombre: 'Aire Acondicionado 9000 BTU', potencia: 800 },
+            { nombre: 'Aire Acondicionado 12000 BTU', potencia: 1100 },
+            { nombre: 'Aire Acondicionado 18000 BTU', potencia: 1600 },
+            { nombre: 'Calefactor Eléctrico', potencia: 1500 },
+            { nombre: 'Estufa de Cuarzo', potencia: 1200 },
+            { nombre: 'Ventilador de Pie', potencia: 60 },
+            { nombre: 'Ventilador de Techo', potencia: 75 },
+            { nombre: 'Deshumidificador', potencia: 250 },
+            { nombre: 'Humidificador', potencia: 35 }
+        ],
+        'iluminacion': [
+            { nombre: 'Foco LED 9W', potencia: 9 },
+            { nombre: 'Foco LED 12W', potencia: 12 },
+            { nombre: 'Foco LED 15W', potencia: 15 },
+            { nombre: 'Tubo LED 18W', potencia: 18 },
+            { nombre: 'Lámpara de Mesa LED', potencia: 8 },
+            { nombre: 'Lámpara de Pie', potencia: 15 },
+            { nombre: 'Foco Halógeno 50W', potencia: 50 },
+            { nombre: 'Foco Incandescente 60W', potencia: 60 },
+            { nombre: 'Luz Exterior Solar', potencia: 10 }
+        ],
+        'linea_blanca': [
+            { nombre: 'Refrigerador 300L', potencia: 150 },
+            { nombre: 'Refrigerador 400L', potencia: 180 },
+            { nombre: 'Refrigerador Side-by-Side', potencia: 250 },
+            { nombre: 'Lavadora 6kg', potencia: 500 },
+            { nombre: 'Lavadora 8kg', potencia: 600 },
+            { nombre: 'Lavadora 10kg', potencia: 700 },
+            { nombre: 'Secadora de Ropa', potencia: 3000 },
+            { nombre: 'Lavavajillas', potencia: 1200 },
+            { nombre: 'Microondas', potencia: 1000 },
+            { nombre: 'Horno Eléctrico', potencia: 2000 },
+            { nombre: 'Cocina Eléctrica', potencia: 1500 }
+        ],
+        'tecnologia': [
+            { nombre: 'Televisor LED 32"', potencia: 40 },
+            { nombre: 'Televisor LED 42"', potencia: 60 },
+            { nombre: 'Televisor LED 55"', potencia: 90 },
+            { nombre: 'Televisor OLED 65"', potencia: 120 },
+            { nombre: 'Computador Desktop', potencia: 150 },
+            { nombre: 'Laptop', potencia: 65 },
+            { nombre: 'Monitor 24"', potencia: 25 },
+            { nombre: 'Impresora', potencia: 50 },
+            { nombre: 'Router WiFi', potencia: 12 },
+            { nombre: 'Consola de Videojuegos', potencia: 150 },
+            { nombre: 'Soundbar', potencia: 30 },
+            { nombre: 'Cargador de Celular', potencia: 10 }
+        ],
+        'otros': [
+            { nombre: 'Aspiradora', potencia: 800 },
+            { nombre: 'Plancha de Ropa', potencia: 1200 },
+            { nombre: 'Hervidor Eléctrico', potencia: 1500 },
+            { nombre: 'Tostadora', potencia: 850 },
+            { nombre: 'Cafetera', potencia: 900 },
+            { nombre: 'Licuadora', potencia: 300 },
+            { nombre: 'Batidora', potencia: 400 },
+            { nombre: 'Secador de Pelo', potencia: 1600 },
+            { nombre: 'Afeitadora Eléctrica', potencia: 15 },
+            { nombre: 'Cepillo Dental Eléctrico', potencia: 3 }
+        ]
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Elementos del DOM
+        const categoriaSelect = document.getElementById('categoriaSelect');
+        const electrodomesticoSelect = document.getElementById('electrodomesticoSelect');
+        const cantidadElectrodomestico = document.getElementById('cantidadElectrodomestico');
+        const horasUsoDiario = document.getElementById('horasUsoDiario');
+        const diasUsoMensual = document.getElementById('diasUsoMensual');
+        const btnAgregar = document.getElementById('btnAgregar');
+        
+        // Elementos manuales
+        const nombreManual = document.getElementById('nombreManual');
+        const categoriaManual = document.getElementById('categoriaManual');
+        const potenciaManual = document.getElementById('potenciaManual');
+        const cantidadManual = document.getElementById('cantidadManual');
+        const horasManual = document.getElementById('horasManual');
+        const diasManual = document.getElementById('diasManual');
+        const btnAgregarManual = document.getElementById('btnAgregarManual');
+        
+        // Elementos de lista y resumen
+        const listaElectrodomesticos = document.getElementById('listaElectrodomesticos');
+        const totalElectrodomesticos = document.getElementById('totalElectrodomesticos');
+        const totalConsumo = document.getElementById('totalConsumo');
+        const totalCosto = document.getElementById('totalCosto');
+        const btnCalcularTotal = document.getElementById('btnCalcularTotal');
+        const btnLimpiarSeleccionados = document.getElementById('btnLimpiarSeleccionados');
+        
+        // Elementos de resumen de costos
+        const resumenCostos = document.getElementById('resumenCostos');
+        const resumenCostoElectrodomesticos = document.getElementById('resumenCostoElectrodomesticos');
+        const resumenCargoFijo = document.getElementById('resumenCargoFijo');
+        const resumenTotalPagar = document.getElementById('resumenTotalPagar');
+        
+        // Elementos de registro mensual
+        const mesSelect = document.getElementById('mesSelect');
+        const anioInput = document.getElementById('anioInput');
+        const kwhRealInput = document.getElementById('kwhRealInput');
+        const totalPagarInput = document.getElementById('totalPagarInput');
+        const notaInput = document.getElementById('notaInput');
+        const btnRegistrarMes = document.getElementById('btnRegistrarMes');
+
+        // Elementos de visualización de servicio eléctrico
+        const displayCompania = document.getElementById('displayCompania');
+        const displayPotencia = document.getElementById('displayPotencia');
+        const displayCargoFijo = document.getElementById('displayCargoFijo');
+        const displayPrecioKwh = document.getElementById('displayPrecioKwh');
+
+        // Botones de gestión
+        const btnCargarUltimoMes = document.getElementById('btnCargarUltimoMes');
+        const btnLimpiarLista = document.getElementById('btnLimpiarLista');
+
+        // Elementos de modales
+        const modalExito = document.getElementById('modalExito');
+        const modalTitulo = document.getElementById('modalTitulo');
+        const modalMensaje = document.getElementById('modalMensaje');
+        const modalCerrar = document.getElementById('modalCerrar');
+        const modalDuplicado = document.getElementById('modalDuplicado');
+        const modalDuplicadoMensaje = document.getElementById('modalDuplicadoMensaje');
+        const modalCancelar = document.getElementById('modalCancelar');
+        const modalActualizar = document.getElementById('modalActualizar');
+        
+        // Modal de edición
+        const modalEditar = document.getElementById('modalEditar');
+        const editNombre = document.getElementById('editNombre');
+        const editPotencia = document.getElementById('editPotencia');
+        const editCantidad = document.getElementById('editCantidad');
+        const editHoras = document.getElementById('editHoras');
+        const editDias = document.getElementById('editDias');
+        const modalEditarCancelar = document.getElementById('modalEditarCancelar');
+        const modalEditarGuardar = document.getElementById('modalEditarGuardar');
+
+        // Array para almacenar electrodomésticos agregados
+        let electrodomesticos = [];
+        let registroDuplicado = null;
+        let electrodomesticoEditando = null;
+
+        // Cargar configuración del servicio eléctrico
+        cargarConfiguracionServicio();
+        
+        // Cargar electrodomésticos guardados
+        cargarElectrodomesticosGuardados();
+
+        // Event Listeners
+        categoriaSelect.addEventListener('change', actualizarElectrodomesticos);
+        btnAgregar.addEventListener('click', agregarElectrodomestico);
+        btnAgregarManual.addEventListener('click', agregarElectrodomesticoManual);
+        btnCalcularTotal.addEventListener('click', calcularTotalHogar);
+        btnRegistrarMes.addEventListener('click', registrarMes);
+        btnLimpiarSeleccionados.addEventListener('click', limpiarElectrodomesticosSeleccionados);
+        
+        // Nuevos event listeners para gestión
+        btnCargarUltimoMes.addEventListener('click', cargarUltimoMes);
+        btnLimpiarLista.addEventListener('click', limpiarListaElectrodomesticos);
+
+        // Event Listeners para modales
+        modalCerrar.addEventListener('click', function() {
+            modalExito.classList.add('hidden');
+        });
+        modalCancelar.addEventListener('click', () => modalDuplicado.classList.add('hidden'));
+        modalActualizar.addEventListener('click', actualizarRegistroDuplicado);
+        
+        // Event listeners para modal de edición
+        modalEditarCancelar.addEventListener('click', () => modalEditar.classList.add('hidden'));
+        modalEditarGuardar.addEventListener('click', guardarEdicionElectrodomestico);
+
+        // Validaciones en tiempo real
+        horasUsoDiario.addEventListener('change', validarHoras);
+        diasUsoMensual.addEventListener('change', validarDias);
+        horasManual.addEventListener('change', validarHorasManual);
+        diasManual.addEventListener('change', validarDiasManual);
+
+        function validarHoras() {
+            const horas = parseFloat(horasUsoDiario.value);
+            if (horas < 0) horasUsoDiario.value = 0;
+            if (horas > 24) horasUsoDiario.value = 24;
+        }
+
+        function validarDias() {
+            const dias = parseInt(diasUsoMensual.value);
+            if (dias < 1) diasUsoMensual.value = 1;
+            if (dias > 31) diasUsoMensual.value = 31;
+        }
+
+        function validarHorasManual() {
+            const horas = parseFloat(horasManual.value);
+            if (horas < 0) horasManual.value = 0;
+            if (horas > 24) horasManual.value = 24;
+        }
+
+        function validarDiasManual() {
+            const dias = parseInt(diasManual.value);
+            if (dias < 1) diasManual.value = 1;
+            if (dias > 31) diasManual.value = 31;
+        }
+
+        // Función para obtener el ID del usuario actual
+        function getCurrentUserId() {
+            const usernameFromTemplate = "{{ user.username }}";
+            
+            if (usernameFromTemplate && usernameFromTemplate !== "" && usernameFromTemplate !== "AnonymousUser") {
+                return usernameFromTemplate;
+            }
+            
+            const storedUser = localStorage.getItem('current_username');
+            if (storedUser) {
+                return storedUser;
+            }
+            
+            let sessionId = localStorage.getItem('session_id');
+            if (!sessionId) {
+                sessionId = 'session_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('session_id', sessionId);
+            }
+            return sessionId;
+        }
+
+        function cargarConfiguracionServicio() {
+            const userId = getCurrentUserId();
+            const configGuardada = localStorage.getItem(`voltify_configuracion_${userId}`);
+            if (configGuardada) {
+                const config = JSON.parse(configGuardada);
+                
+                displayCompania.textContent = config.compania ? obtenerNombreCompania(config.compania) : 'No configurada';
+                displayPotencia.textContent = config.potencia ? `${config.potencia} kW` : '- kW';
+                displayCargoFijo.textContent = config.cargoFijo ? `$${parseInt(config.cargoFijo).toLocaleString()}/mes` : '$ -/mes';
+                displayPrecioKwh.textContent = config.precioKwh ? `$${parseInt(config.precioKwh).toLocaleString()}` : '$ -';
+            } else {
+                displayCompania.textContent = 'No configurada';
+                displayPotencia.textContent = '- kW';
+                displayCargoFijo.textContent = '$ -/mes';
+                displayPrecioKwh.textContent = '$ -';
+            }
+        }
+
+        function cargarElectrodomesticosGuardados() {
+            const userId = getCurrentUserId();
+            const electrodomesticosGuardados = localStorage.getItem(`voltify_electrodomesticos_actuales_${userId}`);
+            
+            if (electrodomesticosGuardados) {
+                electrodomesticos = JSON.parse(electrodomesticosGuardados);
+                actualizarLista();
+                calcularTotalHogar();
+            }
+        }
+
+        function guardarElectrodomesticos() {
+            const userId = getCurrentUserId();
+            localStorage.setItem(`voltify_electrodomesticos_actuales_${userId}`, JSON.stringify(electrodomesticos));
+        }
+
+        function cargarUltimoMes() {
+            const userId = getCurrentUserId();
+            const registros = JSON.parse(localStorage.getItem(`voltify_registros_mensuales_${userId}`) || '[]');
+            
+            if (registros.length === 0) {
+                mostrarModal('Información', 'No hay meses registrados anteriores', 'info');
+                return;
+            }
+            
+            // Ordenar registros por fecha (más reciente primero)
+            registros.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+            const ultimoRegistro = registros[0];
+            
+            if (!ultimoRegistro.electrodomesticos || ultimoRegistro.electrodomesticos.length === 0) {
+                mostrarModal('Información', 'El último mes registrado no tiene electrodomésticos', 'info');
+                return;
+            }
+            
+            // Preguntar al usuario si quiere cargar los electrodomésticos
+            if (confirm(`¿Deseas cargar los electrodomésticos del último mes registrado (${ultimoRegistro.mesNombre} ${ultimoRegistro.anio})? Se reemplazarán los electrodomésticos actuales.`)) {
+                electrodomesticos = [...ultimoRegistro.electrodomesticos];
+                actualizarLista();
+                calcularTotalHogar();
+                guardarElectrodomesticos();
+                mostrarModal('Éxito', `Electrodomésticos de ${ultimoRegistro.mesNombre} ${ultimoRegistro.anio} cargados correctamente`, 'success');
+            }
+        }
+
+        function limpiarListaElectrodomesticos() {
+            if (electrodomesticos.length === 0) {
+                mostrarModal('Información', 'No hay electrodomésticos para limpiar', 'info');
+                return;
+            }
+            
+            if (confirm('¿Estás seguro de que quieres eliminar todos los electrodomésticos de la lista?')) {
+                electrodomesticos = [];
+                actualizarLista();
+                calcularTotalHogar();
+                guardarElectrodomesticos();
+                mostrarModal('Éxito', 'Todos los electrodomésticos han sido eliminados', 'success');
+            }
+        }
+
+        // NUEVA FUNCIÓN: Limpiar electrodomésticos seleccionados
+        function limpiarElectrodomesticosSeleccionados() {
+            if (electrodomesticos.length === 0) {
+                mostrarModal('Información', 'No hay electrodomésticos seleccionados para limpiar', 'info');
+                return;
+            }
+            
+            if (confirm('¿Estás seguro de que quieres eliminar todos los electrodomésticos seleccionados? Esta acción no afectará los meses ya registrados.')) {
+                // Limpiar el array de electrodomésticos
+                electrodomesticos = [];
+                
+                // Actualizar la lista visualmente
+                actualizarLista();
+                
+                // Recalcular totales
+                calcularTotalHogar();
+                
+                // Guardar el array vacío en localStorage
+                guardarElectrodomesticos();
+                
+                // Ocultar el botón de limpiar
+                btnLimpiarSeleccionados.classList.add('hidden');
+                
+                mostrarModal('Éxito', 'Todos los electrodomésticos seleccionados han sido eliminados', 'success');
+            }
+        }
+
+        function obtenerNombreCompania(codigo) {
+            const companias = {
+                'enel': 'Enel Distribución',
+                'chilquinta': 'Chilquinta Energía',
+                'frontel': 'Frontel',
+                'saesa': 'Saesa',
+                'cge': 'CGE',
+                'lit': 'Luz del Sur (LIT)',
+                'other': 'Otra compañía'
+            };
+            return companias[codigo] || codigo;
+        }
+
+        function actualizarElectrodomesticos() {
+            const categoria = categoriaSelect.value;
+            electrodomesticoSelect.innerHTML = '<option value="">Selecciona un electrodoméstico...</option>';
+            
+            if (categoria && electrodomesticosDB[categoria]) {
+                electrodomesticoSelect.disabled = false;
+                electrodomesticosDB[categoria].forEach(electro => {
+                    const option = document.createElement('option');
+                    option.value = electro.nombre;
+                    option.textContent = `${electro.nombre} (${electro.potencia}W)`;
+                    option.dataset.potencia = electro.potencia;
+                    electrodomesticoSelect.appendChild(option);
+                });
+            } else {
+                electrodomesticoSelect.disabled = true;
+                electrodomesticoSelect.innerHTML = '<option value="">Primero selecciona una categoría</option>';
+            }
+        }
+
+        function agregarElectrodomestico() {
+            const categoria = categoriaSelect.value;
+            const electrodomestico = electrodomesticoSelect.value;
+            const selectedOption = electrodomesticoSelect.options[electrodomesticoSelect.selectedIndex];
+            const potencia = selectedOption.dataset.potencia;
+            const cantidad = parseInt(cantidadElectrodomestico.value);
+            const horasDiarias = parseFloat(horasUsoDiario.value);
+            const diasMensuales = parseInt(diasUsoMensual.value);
+
+            // Validaciones
+            if (!categoria || !electrodomestico) {
+                mostrarModal('Error', 'Por favor selecciona una categoría y un electrodoméstico', 'error');
+                return;
+            }
+
+            if (horasDiarias < 0 || horasDiarias > 24) {
+                mostrarModal('Error', 'Las horas de uso diario deben estar entre 0 y 24 horas', 'error');
+                return;
+            }
+
+            if (diasMensuales < 1 || diasMensuales > 31) {
+                mostrarModal('Error', 'Los días de uso mensual deben estar entre 1 y 31 días', 'error');
+                return;
+            }
+
+            const nuevoElectrodomestico = {
+                id: Date.now(),
+                nombre: electrodomestico,
+                categoria: categoria,
+                potencia: parseInt(potencia),
+                cantidad: cantidad,
+                horasDiarias: horasDiarias,
+                diasMensuales: diasMensuales,
+                tipo: 'predefinido'
+            };
+
+            electrodomesticos.push(nuevoElectrodomestico);
+            actualizarLista();
+            limpiarFormulario();
+            guardarElectrodomesticos();
+        }
+
+        function agregarElectrodomesticoManual() {
+            const nombre = nombreManual.value.trim();
+            const categoria = categoriaManual.value;
+            const potencia = parseInt(potenciaManual.value);
+            const cantidad = parseInt(cantidadManual.value);
+            const horasDiarias = parseFloat(horasManual.value);
+            const diasMensuales = parseInt(diasManual.value);
+
+            // Validaciones
+            if (!nombre || !potencia || potencia <= 0) {
+                mostrarModal('Error', 'Por favor completa todos los campos obligatorios', 'error');
+                return;
+            }
+
+            if (horasDiarias < 0 || horasDiarias > 24) {
+                mostrarModal('Error', 'Las horas de uso diario deben estar entre 0 y 24 horas', 'error');
+                return;
+            }
+
+            if (diasMensuales < 1 || diasMensuales > 31) {
+                mostrarModal('Error', 'Los días de uso mensual deben estar entre 1 y 31 días', 'error');
+                return;
+            }
+
+            const nuevoElectrodomestico = {
+                id: Date.now(),
+                nombre: nombre,
+                categoria: categoria,
+                potencia: potencia,
+                cantidad: cantidad,
+                horasDiarias: horasDiarias,
+                diasMensuales: diasMensuales,
+                tipo: 'manual'
+            };
+
+            electrodomesticos.push(nuevoElectrodomestico);
+            actualizarLista();
+            limpiarFormularioManual();
+            guardarElectrodomesticos();
+        }
+
+        function actualizarLista() {
+            if (electrodomesticos.length === 0) {
+                listaElectrodomesticos.innerHTML = `
+                    <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                        <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <p>No has agregado electrodomésticos aún</p>
+                        <p class="text-sm">Comienza seleccionando electrodomésticos de la lista</p>
+                    </div>
+                `;
+                resumenCostos.classList.add('hidden');
+                btnLimpiarSeleccionados.classList.add('hidden'); // Ocultar botón cuando no hay electrodomésticos
+            } else {
+                const userId = getCurrentUserId();
+                const config = JSON.parse(localStorage.getItem(`voltify_configuracion_${userId}`) || '{}');
+                const precioKwh = parseFloat(config.precioKwh) || 120;
+                
+                listaElectrodomesticos.innerHTML = electrodomesticos.map(electro => {
+                    const consumoKwh = calcularConsumoIndividual(electro);
+                    const costo = consumoKwh * precioKwh;
+                    
+                    return `
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">${electro.nombre}</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    ${electro.cantidad} unidad(es) • ${electro.potencia}W • ${electro.horasDiarias}h/día • ${electro.diasMensuales}días/mes
+                                </p>
+                            </div>
+                            <div class="flex space-x-2 ml-4">
+                                <button onclick="editarElectrodomestico(${electro.id})" class="text-blue-500 hover:text-blue-700" title="Editar">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </button>
+                                <button onclick="eliminarElectrodomestico(${electro.id})" class="text-red-500 hover:text-red-700" title="Eliminar">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">
+                            Consumo: <strong>${consumoKwh.toFixed(2)} kWh/mes</strong> • 
+                            Costo: <strong class="text-green-600 dark:text-green-400">$${Math.round(costo).toLocaleString()}</strong>
+                        </div>
+                    </div>
+                `}).join('');
+                
+                resumenCostos.classList.remove('hidden');
+                btnLimpiarSeleccionados.classList.remove('hidden'); // Mostrar botón cuando hay electrodomésticos
+            }
+
+            totalElectrodomesticos.textContent = electrodomesticos.length;
+            
+            // Calcular automáticamente los campos de registro
+            calcularAutomatico();
+        }
+
+        function calcularConsumoIndividual(electro) {
+            const consumoDiarioKwh = (electro.potencia * electro.cantidad * electro.horasDiarias) / 1000;
+            return consumoDiarioKwh * electro.diasMensuales;
+        }
+
+        function calcularAutomatico() {
+            const userId = getCurrentUserId();
+            const config = JSON.parse(localStorage.getItem(`voltify_configuracion_${userId}`) || '{}');
+            const precioKwh = parseFloat(config.precioKwh) || 120;
+            const cargoFijo = parseFloat(config.cargoFijo) || 0;
+
+            let consumoTotalKwh = 0;
+            
+            electrodomesticos.forEach(electro => {
+                const consumo = calcularConsumoIndividual(electro);
+                consumoTotalKwh += consumo;
+            });
+
+            const costoTotalElectrodomesticos = consumoTotalKwh * precioKwh;
+            const costoTotal = costoTotalElectrodomesticos + cargoFijo;
+
+            // Actualizar campos automáticamente
+            if (kwhRealInput) kwhRealInput.value = consumoTotalKwh.toFixed(2);
+            if (totalPagarInput) totalPagarInput.value = Math.round(costoTotal);
+        }
+
+        function calcularTotalHogar() {
+            const userId = getCurrentUserId();
+            const config = JSON.parse(localStorage.getItem(`voltify_configuracion_${userId}`) || '{}');
+            const precioKwh = parseFloat(config.precioKwh) || 120;
+            const cargoFijo = parseFloat(config.cargoFijo) || 0;
+
+            let consumoTotalKwh = 0;
+            let costoTotalElectrodomesticos = 0;
+            
+            electrodomesticos.forEach(electro => {
+                const consumo = calcularConsumoIndividual(electro);
+                consumoTotalKwh += consumo;
+                costoTotalElectrodomesticos += consumo * precioKwh;
+            });
+
+            const costoTotal = costoTotalElectrodomesticos + cargoFijo;
+
+            totalConsumo.textContent = consumoTotalKwh.toFixed(2);
+            totalCosto.textContent = `$${Math.round(costoTotal).toLocaleString()}`;
+
+            // Actualizar resumen de costos
+            resumenCostoElectrodomesticos.textContent = `$${Math.round(costoTotalElectrodomesticos).toLocaleString()}`;
+            resumenCargoFijo.textContent = `$${Math.round(cargoFijo).toLocaleString()}`;
+            resumenTotalPagar.textContent = `$${Math.round(costoTotal).toLocaleString()}`;
+
+            // Actualizar campos de registro
+            calcularAutomatico();
+        }
+
+        function editarElectrodomestico(id) {
+            const electrodomestico = electrodomesticos.find(e => e.id === id);
+            if (!electrodomestico) return;
+
+            electrodomesticoEditando = electrodomestico;
+
+            // Llenar el modal con los datos actuales
+            editNombre.value = electrodomestico.nombre;
+            editPotencia.value = electrodomestico.potencia;
+            editCantidad.value = electrodomestico.cantidad;
+            editHoras.value = electrodomestico.horasDiarias;
+            editDias.value = electrodomestico.diasMensuales;
+
+            // Mostrar modal
+            modalEditar.classList.remove('hidden');
+        }
+
+        function guardarEdicionElectrodomestico() {
+            if (!electrodomesticoEditando) return;
+
+            // Validaciones
+            if (!editNombre.value.trim()) {
+                mostrarModal('Error', 'El nombre no puede estar vacío', 'error');
+                return;
+            }
+
+            if (!editPotencia.value || editPotencia.value <= 0) {
+                mostrarModal('Error', 'La potencia debe ser mayor a 0', 'error');
+                return;
+            }
+
+            if (!editCantidad.value || editCantidad.value <= 0) {
+                mostrarModal('Error', 'La cantidad debe ser mayor a 0', 'error');
+                return;
+            }
+
+            if (!editHoras.value || editHoras.value < 0 || editHoras.value > 24) {
+                mostrarModal('Error', 'Las horas deben estar entre 0 y 24', 'error');
+                return;
+            }
+
+            if (!editDias.value || editDias.value < 1 || editDias.value > 31) {
+                mostrarModal('Error', 'Los días deben estar entre 1 y 31', 'error');
+                return;
+            }
+
+            // Actualizar el electrodoméstico
+            electrodomesticoEditando.nombre = editNombre.value.trim();
+            electrodomesticoEditando.potencia = parseInt(editPotencia.value);
+            electrodomesticoEditando.cantidad = parseInt(editCantidad.value);
+            electrodomesticoEditando.horasDiarias = parseFloat(editHoras.value);
+            electrodomesticoEditando.diasMensuales = parseInt(editDias.value);
+
+            // Actualizar lista y cálculos
+            actualizarLista();
+            calcularTotalHogar();
+            guardarElectrodomesticos();
+
+            // Cerrar modal
+            modalEditar.classList.add('hidden');
+            electrodomesticoEditando = null;
+
+            mostrarModal('Éxito', 'Electrodoméstico actualizado correctamente', 'success');
+        }
+
+        function verificarMesDuplicado(mes, anio) {
+            const userId = getCurrentUserId();
+            const registrosExistentes = JSON.parse(localStorage.getItem(`voltify_registros_mensuales_${userId}`) || '[]');
+            
+            return registrosExistentes.findIndex(registro => 
+                registro.mes === mes && registro.anio === anio
+            );
+        }
+
+        function registrarMes() {
+            const mes = parseInt(mesSelect.value);
+            const anio = parseInt(anioInput.value);
+            const kwhReal = parseFloat(kwhRealInput.value);
+            const totalPagar = parseFloat(totalPagarInput.value);
+            const nota = notaInput.value.trim();
+
+            // Validaciones
+            if (!kwhReal || kwhReal <= 0) {
+                mostrarModal('Error', 'Por favor ingresa un consumo real válido', 'error');
+                return;
+            }
+
+            if (!totalPagar || totalPagar <= 0) {
+                mostrarModal('Error', 'Por favor ingresa un total a pagar válido', 'error');
+                return;
+            }
+
+            // Verificar si el mes ya está registrado
+            const indiceDuplicado = verificarMesDuplicado(mes, anio);
+            if (indiceDuplicado !== -1) {
+                const nombresMeses = [
+                    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+                ];
+                modalDuplicadoMensaje.textContent = `Ya existe un registro para ${nombresMeses[mes-1]} ${anio}. ¿Deseas actualizarlo?`;
+                registroDuplicado = { mes, anio, indice: indiceDuplicado };
+                modalDuplicado.classList.remove('hidden');
+                return;
+            }
+
+            // Si no está duplicado, proceder con el registro normal
+            guardarRegistroMes(mes, anio, kwhReal, totalPagar, nota);
+        }
+
+        function actualizarRegistroDuplicado() {
+            if (!registroDuplicado) return;
+
+            const mes = registroDuplicado.mes;
+            const anio = registroDuplicado.anio;
+            const kwhReal = parseFloat(kwhRealInput.value);
+            const totalPagar = parseFloat(totalPagarInput.value);
+            const nota = notaInput.value.trim();
+
+            guardarRegistroMes(mes, anio, kwhReal, totalPagar, nota, registroDuplicado.indice);
+            modalDuplicado.classList.add('hidden');
+            registroDuplicado = null;
+        }
+
+        function guardarRegistroMes(mes, anio, kwhReal, totalPagar, nota, indiceActualizar = -1) {
+            const nombresMeses = [
+                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+            ];
+
+            const registroMes = {
+                fecha: new Date().toISOString(),
+                mes: mes,
+                mesNombre: nombresMeses[mes - 1],
+                anio: anio,
+                kwhReal: kwhReal,
+                totalPagar: totalPagar,
+                nota: nota,
+                electrodomesticos: [...electrodomesticos]
+            };
+
+            // Obtener el ID del usuario actual
+            const userId = getCurrentUserId();
+            
+            // Obtener registros existentes o crear array vacío
+            const registrosExistentes = JSON.parse(localStorage.getItem(`voltify_registros_mensuales_${userId}`) || '[]');
+            
+            if (indiceActualizar !== -1) {
+                // Actualizar registro existente
+                registrosExistentes[indiceActualizar] = registroMes;
+                mostrarModal('¡Actualizado!', `Mes ${nombresMeses[mes-1]} ${anio} actualizado exitosamente`, 'success', true);
+            } else {
+                // Agregar nuevo registro
+                registrosExistentes.push(registroMes);
+                mostrarModal('¡Éxito!', `Mes ${nombresMeses[mes-1]} ${anio} registrado exitosamente`, 'success', true);
+            }
+            
+            localStorage.setItem(`voltify_registros_mensuales_${userId}`, JSON.stringify(registrosExistentes));
+
+            // Limpiar formulario
+            kwhRealInput.value = '';
+            totalPagarInput.value = '';
+            notaInput.value = '';
+        }
+
+        function mostrarModal(titulo, mensaje, tipo = 'success', redireccionar = false) {
+            modalTitulo.textContent = titulo;
+            modalMensaje.textContent = mensaje;
+            
+            // Cambiar colores según el tipo
+            const icono = modalExito.querySelector('svg');
+            const fondoIcono = modalExito.querySelector('.bg-green-100');
+            
+            if (tipo === 'error') {
+                icono.classList.remove('text-green-600');
+                icono.classList.add('text-red-600');
+                fondoIcono.classList.remove('bg-green-100');
+                fondoIcono.classList.add('bg-red-100');
+            } else if (tipo === 'info') {
+                icono.classList.remove('text-green-600');
+                icono.classList.add('text-blue-600');
+                fondoIcono.classList.remove('bg-green-100');
+                fondoIcono.classList.add('bg-blue-100');
+            } else {
+                icono.classList.remove('text-red-600', 'text-blue-600');
+                icono.classList.add('text-green-600');
+                fondoIcono.classList.remove('bg-red-100', 'bg-blue-100');
+                fondoIcono.classList.add('bg-green-100');
+            }
+            
+            modalExito.classList.remove('hidden');
+            
+            // Configurar el botón de cerrar para redireccionar si es necesario
+            modalCerrar.onclick = function() {
+                modalExito.classList.add('hidden');
+                if (redireccionar) {
+                    // Redireccionar al historial después de cerrar el modal
+                    setTimeout(() => {
+                        window.location.href = "{% url 'historial' %}";
+                    }, 500);
+                }
+            };
+        }
+
+        function eliminarElectrodomestico(id) {
+            electrodomesticos = electrodomesticos.filter(electro => electro.id !== id);
+            actualizarLista();
+            guardarElectrodomesticos();
+        }
+
+        function limpiarFormulario() {
+            categoriaSelect.value = '';
+            electrodomesticoSelect.innerHTML = '<option value="">Primero selecciona una categoría</option>';
+            electrodomesticoSelect.disabled = true;
+            cantidadElectrodomestico.value = '1';
+            horasUsoDiario.value = '4';
+            diasUsoMensual.value = '30';
+        }
+
+        function limpiarFormularioManual() {
+            nombreManual.value = '';
+            potenciaManual.value = '';
+            cantidadManual.value = '1';
+            horasManual.value = '4';
+            diasManual.value = '30';
+        }
+
+        // Hacer las funciones eliminarElectrodomestico y editarElectrodomestico globales para que funcionen en los botones
+        window.eliminarElectrodomestico = eliminarElectrodomestico;
+        window.editarElectrodomestico = editarElectrodomestico;
+
+        // Sincronizar cambios en la configuración del servicio
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'voltify_configuracion') {
+                cargarConfiguracionServicio();
+            }
+        });
+    });
+</script>
+{% endblock %}
+[file content end]

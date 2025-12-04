@@ -1,0 +1,161 @@
+{% extends 'mi_app/base.html' %}
+
+{% block title %}Política de Privacidad - Voltify Pro{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<header class="bg-gray-900 shadow-sm border-b border-gray-800">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <div class="flex items-center">
+                <a href="{% url 'index' %}" class="flex items-center group">
+                    <div class="text-2xl mr-2 transition-transform group-hover:scale-110">⚡</div>
+                    <div class="text-xl font-bold text-white">Voltify <span class="text-blue-400">Pro</span></div>
+                </a>
+            </div>
+            <div>
+                <a href="{% url 'index' %}" class="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white px-5 py-2.5 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Content -->
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="bg-gray-800 rounded-xl shadow-xl overflow-hidden border border-gray-700">
+        <!-- Header Section -->
+        <div class="bg-gradient-to-r from-gray-700 to-gray-800 px-8 py-6 border-b border-gray-700">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-white mb-2">Política de Privacidad</h1>
+                    <p class="text-gray-300 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                        </svg>
+                        Última actualización: 25 de Noviembre de 2025
+                    </p>
+                </div>
+                <div class="hidden md:block">
+                    <div class="bg-blue-900 text-blue-200 px-3 py-1 rounded-full text-sm font-medium">
+                        Documento Legal
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-8">
+            <div class="prose prose-invert max-w-none">
+                <section class="mb-10 pb-6 border-b border-gray-700">
+                    <h2 class="text-2xl font-semibold text-white mb-4 flex items-center">
+                        <span class="bg-blue-900 text-blue-300 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">1</span>
+                        Información que Recopilamos
+                    </h2>
+                    <p class="text-gray-300 mb-4">
+                        En Voltify Pro, recopilamos la siguiente información para proporcionar y mejorar nuestros servicios:
+                    </p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-gray-300"><strong class="text-white">Información de cuenta:</strong> nombre de usuario, correo electrónico y contraseña</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-gray-300"><strong class="text-white">Datos de consumo energético:</strong> artefactos eléctricos, horas de uso, consumo estimado y patrones de uso</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-gray-300"><strong class="text-white">Información técnica:</strong> dirección IP, tipo de navegador, páginas visitadas y tiempo de sesión</span>
+                        </li>
+                    </ul>
+                </section>
+
+                <section class="mb-10 pb-6 border-b border-gray-700">
+                    <h2 class="text-2xl font-semibold text-white mb-4 flex items-center">
+                        <span class="bg-blue-900 text-blue-300 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">2</span>
+                        Uso de la Información
+                    </h2>
+                    <p class="text-gray-300 mb-4">
+                        Utilizamos la información recopilada para los siguientes propósitos:
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <h3 class="font-semibold text-white mb-2">Servicios Principales</h3>
+                            <p class="text-gray-300 text-sm">Proporcionar análisis de consumo energético y recomendaciones personalizadas</p>
+                        </div>
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <h3 class="font-semibold text-white mb-2">Mejora del Servicio</h3>
+                            <p class="text-gray-300 text-sm">Desarrollar nuevas funciones y optimizar la experiencia de usuario</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="mb-10">
+                    <h2 class="text-2xl font-semibold text-white mb-4 flex items-center">
+                        <span class="bg-blue-900 text-blue-300 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">3</span>
+                        Protección de Datos
+                    </h2>
+                    <p class="text-gray-300 mb-4">
+                        Implementamos medidas de seguridad técnicas y organizativas para proteger sus datos personales contra accesos no autorizados, pérdida o alteración.
+                    </p>
+                    <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-4 mt-4">
+                        <div class="flex">
+                            <svg class="w-5 h-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <p class="text-blue-200 text-sm">
+                                <strong>Nota importante:</strong> Sus datos nunca se venderán a terceros. Solo compartimos información con proveedores de servicios esenciales para el funcionamiento de nuestra plataforma.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-12 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-4 gap-8">
+            <div class="md:col-span-2">
+                <div class="flex items-center mb-4">
+                    <div class="text-2xl mr-2">⚡</div>
+                    <div class="text-xl font-bold">Voltify <span class="text-blue-400">Pro</span></div>
+                </div>
+                <p class="text-gray-400 max-w-md">
+                    Soluciones inteligentes para la gestión y optimización de consumo energético en hogares y empresas.
+                </p>
+            </div>
+            <div>
+                <h3 class="font-semibold text-white mb-4">Legal</h3>
+                <ul class="space-y-2">
+                    <li><a href="{% url 'privacy' %}" class="text-gray-400 hover:text-white transition-colors">Política de Privacidad</a></li>
+                    <li><a href="{% url 'terms' %}" class="text-gray-400 hover:text-white transition-colors">Términos de Servicio</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-semibold text-white mb-4">Navegación</h3>
+                <ul class="space-y-2">
+                    <li><a href="{% url 'index' %}" class="text-gray-400 hover:text-white transition-colors">Inicio</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Características</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2025 Voltify Pro. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+{% endblock %}

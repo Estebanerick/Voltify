@@ -1,0 +1,1485 @@
+[file name]: historial.html
+[file content begin]
+{% extends 'mi_app/base.html' %}
+
+{% block title %}Historial - Voltify Pro{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <div class="flex items-center">
+                <a href="{% url 'inicio' %}" class="flex items-center group">
+                    <div class="text-2xl mr-2 transition-transform group-hover:scale-110">⚡</div>
+                    <div class="text-xl font-bold text-gray-800 dark:text-white">Voltify <span class="text-blue-600">Pro</span></div>
+                </a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="{% url 'inicio' %}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header Section -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">
+            Historial de Consumo
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300">
+            Revisa y analiza tu consumo eléctrico a lo largo del tiempo
+        </p>
+    </div>
+
+    <!-- Información del Servicio -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
+            ⚡ Configuración de tu Servicio
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Compañía -->
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-6 text-center border border-blue-200 dark:border-blue-700">
+                <div class="text-3xl mb-3 text-blue-600">🏢</div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Compañía</h3>
+                <p id="historialCompania" class="text-lg font-bold text-blue-600 dark:text-blue-400">-</p>
+            </div>
+            
+            <!-- Potencia Contratada -->
+            <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl p-6 text-center border border-green-200 dark:border-green-700">
+                <div class="text-3xl mb-3 text-green-600">🔌</div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Potencia</h3>
+                <p id="historialPotencia" class="text-lg font-bold text-green-600 dark:text-green-400">- kW</p>
+            </div>
+            
+            <!-- Cargo Fijo -->
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-6 text-center border border-purple-200 dark:border-purple-700">
+                <div class="text-3xl mb-3 text-purple-600">💰</div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Cargo Fijo</h3>
+                <p id="historialCargoFijo" class="text-lg font-bold text-purple-600 dark:text-purple-400">$ -/mes</p>
+            </div>
+            
+            <!-- Precio kWh -->
+            <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-xl p-6 text-center border border-orange-200 dark:border-orange-700">
+                <div class="text-3xl mb-3 text-orange-600">⚡</div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Precio kWh</h3>
+                <p id="historialPrecioKwh" class="text-lg font-bold text-orange-600 dark:text-orange-400">$ -</p>
+            </div>
+        </div>
+
+        <!-- Uso de Potencia - Nuevo diseño -->
+        <div class="mt-8 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-600">
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
+                📊 Análisis de Uso de Potencia
+            </h3>
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+                <div class="lg:w-2/5 text-center">
+                    <div class="relative w-40 h-40 mx-auto mb-4">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 42 42">
+                            <!-- Fondo del círculo -->
+                            <circle cx="21" cy="21" r="15.9155" 
+                                    fill="none" 
+                                    stroke="#e5e7eb" 
+                                    stroke-width="4"/>
+                            <!-- Barra de progreso animada -->
+                            <circle id="potenciaProgressBar" 
+                                    cx="21" cy="21" r="15.9155" 
+                                    fill="none" 
+                                    stroke="#10B981" 
+                                    stroke-width="4" 
+                                    stroke-linecap="round"
+                                    stroke-dasharray="0, 100"
+                                    style="transition: stroke-dasharray 2s ease-in-out, stroke 0.5s ease-in-out;"/>
+                        </svg>
+                        <!-- Texto en el centro -->
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span id="potenciaPorcentaje" class="text-2xl font-bold text-gray-800 dark:text-white">0%</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">Uso</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lg:w-3/5">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="text-center">
+                            <div class="text-lg font-semibold text-gray-800 dark:text-white mb-1">Estado</div>
+                            <div id="potenciaEstado" class="text-sm font-medium px-3 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                                Óptimo
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-lg font-semibold text-gray-800 dark:text-white mb-1">Nivel</div>
+                            <div id="potenciaNivel" class="text-sm font-medium px-3 py-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                                Bajo
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-700">
+                        <div class="flex items-start">
+                            <div class="text-yellow-600 dark:text-yellow-400 text-lg mr-2">💡</div>
+                            <div>
+                                <p id="potenciaRecomendacion" class="text-sm text-yellow-700 dark:text-yellow-300">
+                                    Tu uso de potencia está dentro de los límites óptimos.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráfico Combinado Consumo vs Costo -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
+            📈 Consumo vs Costo Mensual
+        </h2>
+        <div class="h-80 relative" id="graficoCombinado">
+            <!-- El gráfico combinado se generará dinámicamente -->
+            <div class="absolute inset-0 flex items-center justify-center text-gray-500 dark:text-gray-400">
+                No hay datos suficientes para mostrar el gráfico
+            </div>
+        </div>
+        <div class="flex justify-center mt-4 space-x-6" id="leyendaCombinada">
+            <!-- Leyenda se generará dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Gráficos de Categorías -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- Gráfico Lineal por Categorías -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4 text-center">
+                📈 Consumo por Categorías
+            </h2>
+            <div class="h-64 relative" id="graficoLinealCategorias">
+                <!-- El gráfico lineal se generará dinámicamente -->
+                <div class="absolute inset-0 flex items-center justify-center text-gray-500 dark:text-gray-400">
+                    No hay datos de categorías registrados
+                </div>
+            </div>
+            <!-- Leyenda para gráfico lineal de categorías -->
+            <div class="flex flex-wrap justify-center mt-4 space-x-4" id="leyendaCategoriasLineal">
+                <!-- Leyenda se generará dinámicamente -->
+            </div>
+        </div>
+        
+        <!-- Gráfico Circular de Categorías -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4 text-center">
+                🥧 Distribución por Categorías
+            </h2>
+            <div class="h-64 relative flex items-center justify-center" id="graficoCircularContainer">
+                <!-- El gráfico circular se generará dinámicamente -->
+                <div class="text-gray-500 dark:text-gray-400">
+                    No hay datos de categorías
+                </div>
+            </div>
+            <!-- Leyenda para gráfico circular de categorías -->
+            <div class="flex flex-wrap justify-center mt-4 space-x-4" id="leyendaCategoriasCircular">
+                <!-- Leyenda se generará dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- NUEVA SECCIÓN: ¿Sabías que...? -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
+            💡 ¿Sabías que...?
+        </h2>
+
+        <!-- Información Específica para Análisis de Historial -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Análisis de Tendencias -->
+            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <div class="flex items-start">
+                    <div class="bg-blue-100 dark:bg-blue-800 p-2 rounded-lg mr-3">
+                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">Patrones Matemáticos</h3>
+                        <p class="text-blue-700 dark:text-blue-300 text-sm">
+                            Si tu consumo aumenta un 15% cada invierno, en 5 años estarás pagando el DOBLE 
+                            en los meses más fríos. La fórmula: Consumo × (1.15)⁵ = 2.01 × Consumo inicial.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparativa de Eficiencia -->
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                <div class="flex items-start">
+                    <div class="bg-green-100 dark:bg-green-800 p-2 rounded-lg mr-3">
+                        <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-green-800 dark:text-green-200 mb-2">Crecimiento Exponencial</h3>
+                        <p class="text-green-700 dark:text-green-300 text-sm">
+                            Un aumento del 7% mensual en tu consumo significa que en 1 año pagarás 2.25 veces más. 
+                            La matemática: (1.07)¹² = 2.25. ¡Pequeños cambios generan grandes impactos!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Impacto de Electrodomésticos -->
+            <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+                <div class="flex items-start">
+                    <div class="bg-purple-100 dark:bg-purple-800 p-2 rounded-lg mr-3">
+                        <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-purple-800 dark:text-purple-200 mb-2">Ley del 80/20 Eléctrico</h3>
+                        <p class="text-purple-700 dark:text-purple-300 text-sm">
+                            El 20% de tus electrodomésticos genera el 80% de tu consumo. Si identificas esos 
+                            "villanos energéticos", podrías ahorrar hasta $60,000 anuales con pequeños ajustes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Optimización de Potencia -->
+            <div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
+                <div class="flex items-start">
+                    <div class="bg-orange-100 dark:bg-orange-800 p-2 rounded-lg mr-3">
+                        <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-orange-800 dark:text-orange-200 mb-2">Geometría del Ahorro</h3>
+                        <p class="text-orange-700 dark:text-orange-300 text-sm">
+                            Reducir tu potencia contratada de 4.4kW a 3.3kW ahorra $7,500 mensuales. 
+                            Es como eliminar el costo de 1 Netflix Premium + 1 Spotify cada mes, para siempre.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón Más Datos Curiosos -->
+        <div class="text-center mt-6">
+            <a href="{% url 'sabias_que' %}" class="inline-block bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                🧠 Más Datos Curiosos
+            </a>
+        </div>
+
+        <!-- Datos Adicionales (ocultos inicialmente) -->
+        <div id="datosAdicionalesHistorial" class="hidden mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Dato Adicional 1 -->
+            <div class="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-lg p-4">
+                <div class="flex items-start">
+                    <div class="bg-indigo-100 dark:bg-indigo-800 p-2 rounded-lg mr-3">
+                        <span class="text-indigo-600 dark:text-indigo-400 text-lg">📊</span>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Interés Compuesto Energético</h3>
+                        <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                            Si reduces tu consumo un 5% mensual, en un año ahorras el 46% de tu factura anual. 
+                            La fórmula: 1 - (0.95)¹² = 0.46. ¡El ahorro se compone como el interés en un banco!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dato Adicional 2 -->
+            <div class="bg-pink-50 dark:bg-pink-900/20 border border-pink-200 dark:border-pink-800 rounded-lg p-4">
+                <div class="flex items-start">
+                    <div class="bg-pink-100 dark:bg-pink-800 p-2 rounded-lg mr-3">
+                        <span class="text-pink-600 dark:text-pink-400 text-lg">⚡</span>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-pink-800 dark:text-pink-200 mb-2">Velocidad de la Luz en Pesos</h3>
+                        <p class="text-pink-700 dark:text-pink-300 text-sm">
+                            La energía que consumes en 1 segundo (300 kWh) costaría $36,000. 
+                            Es suficiente para que la luz viaje de Santiago a Concepción 7.5 veces.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Historial de Meses Registrados -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white text-center flex-1">
+                📅 Historial de Meses Registrados
+            </h2>
+            <button id="btnVerTodosHistorial" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors ml-4 hidden">
+                Ver todos
+            </button>
+        </div>
+        
+        <div id="listaHistorial" class="space-y-4">
+            <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <p>No hay meses registrados en el historial</p>
+                <p class="text-sm">Registra tu primer mes en la sección de Electrodomésticos del Hogar</p>
+            </div>
+        </div>
+        
+        <div id="listaHistorialCompleta" class="space-y-4 mt-6 hidden">
+            <!-- Aquí se mostrarán todos los registros cuando se despliegue -->
+        </div>
+        
+        <div id="sinHistorial" class="text-center py-8 text-gray-500 dark:text-gray-400 hidden">
+            <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <p>No hay meses registrados en el historial</p>
+            <p class="text-sm">Registra tu primer mes en la sección de Electrodomésticos del Hogar</p>
+        </div>
+
+        <!-- NUEVO: Botón para borrar todo el historial -->
+        <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
+            <button id="btnBorrarHistorial" 
+                    class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-300 flex items-center justify-center mx-auto"
+                    onclick="mostrarConfirmacionBorrado()">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+                Borrar Todo el Historial
+            </button>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                Esta acción eliminará permanentemente todos los registros de consumo
+            </p>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación para borrar historial -->
+    <div id="modalConfirmacionBorrado" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 max-w-md mx-4">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900 mb-4">
+                    <svg class="h-6 w-6 text-red-600 dark:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.404 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">
+                    ¿Estás seguro?
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-6">
+                    Esta acción eliminará permanentemente todo tu historial de consumo. 
+                    Los gráficos y análisis se borrarán. Esta acción no se puede deshacer.
+                </p>
+                <div class="flex justify-center space-x-4">
+                    <button id="btnCancelarBorrado" 
+                            class="px-5 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-lg transition-colors">
+                        Cancelar
+                    </button>
+                    <button id="btnConfirmarBorrado" 
+                            class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
+                        Sí, Borrar Todo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-8 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="flex items-center justify-center mb-4">
+            <div class="text-2xl mr-2">⚡</div>
+            <div class="text-xl font-bold">Voltify Pro</div>
+        </div>
+        <p class="text-gray-400">
+            Control de energía inteligente para hogares chilenos
+        </p>
+        <div class="mt-4 text-sm text-gray-400">
+            <p>&copy; 2025 Voltify Pro. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Función para obtener el ID del usuario actual
+        function getCurrentUserId() {
+            const usernameFromTemplate = "{{ user.username }}";
+            
+            if (usernameFromTemplate && usernameFromTemplate !== "" && usernameFromTemplate !== "AnonymousUser") {
+                return usernameFromTemplate;
+            }
+            
+            const storedUser = localStorage.getItem('current_username');
+            if (storedUser) {
+                return storedUser;
+            }
+            
+            let sessionId = localStorage.getItem('session_id');
+            if (!sessionId) {
+                sessionId = 'session_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('session_id', sessionId);
+            }
+            return sessionId;
+        }
+
+        // Guardar el username en localStorage para persistencia
+        function saveCurrentUserId() {
+            const usernameFromTemplate = "{{ user.username }}";
+            if (usernameFromTemplate && usernameFromTemplate !== "" && usernameFromTemplate !== "AnonymousUser") {
+                localStorage.setItem('current_username', usernameFromTemplate);
+            }
+        }
+
+        // Variables para controlar la vista del historial
+        let mostrandoTodos = false;
+        let registrosOrdenados = [];
+
+        // Cargar configuración del servicio
+        cargarConfiguracionServicio();
+        
+        // Cargar historial
+        cargarHistorial();
+        
+        // Cargar gráficos
+        cargarGraficos();
+
+        // Guardar el ID del usuario al cargar la página
+        saveCurrentUserId();
+
+        // Botón para ver todos los registros
+        const btnVerTodos = document.getElementById('btnVerTodosHistorial');
+        if (btnVerTodos) {
+            btnVerTodos.addEventListener('click', function() {
+                toggleVistaHistorial();
+            });
+        }
+
+        // Configurar eventos para el modal de confirmación
+        const modalConfirmacion = document.getElementById('modalConfirmacionBorrado');
+        const btnCancelarBorrado = document.getElementById('btnCancelarBorrado');
+        const btnConfirmarBorrado = document.getElementById('btnConfirmarBorrado');
+
+        if (btnCancelarBorrado) {
+            btnCancelarBorrado.addEventListener('click', function() {
+                modalConfirmacion.classList.add('hidden');
+            });
+        }
+
+        if (btnConfirmarBorrado) {
+            btnConfirmarBorrado.addEventListener('click', function() {
+                borrarTodoElHistorial();
+                modalConfirmacion.classList.add('hidden');
+            });
+        }
+
+        function toggleVistaHistorial() {
+            const listaHistorial = document.getElementById('listaHistorial');
+            const listaHistorialCompleta = document.getElementById('listaHistorialCompleta');
+            const sinHistorial = document.getElementById('sinHistorial');
+            
+            if (mostrandoTodos) {
+                // Mostrar solo 3 registros
+                listaHistorial.classList.remove('hidden');
+                listaHistorialCompleta.classList.add('hidden');
+                btnVerTodos.textContent = 'Ver todos';
+            } else {
+                // Mostrar todos los registros
+                listaHistorial.classList.add('hidden');
+                listaHistorialCompleta.classList.remove('hidden');
+                btnVerTodos.textContent = 'Ver menos';
+            }
+            
+            mostrandoTodos = !mostrandoTodos;
+        }
+
+        // NUEVA FUNCIÓN: Mostrar modal de confirmación
+        window.mostrarConfirmacionBorrado = function() {
+            const userId = getCurrentUserId();
+            const registros = JSON.parse(localStorage.getItem(`voltify_registros_mensuales_${userId}`) || '[]');
+            
+            if (registros.length === 0) {
+                alert('No hay historial para borrar.');
+                return;
+            }
+            
+            const modalConfirmacion = document.getElementById('modalConfirmacionBorrado');
+            modalConfirmacion.classList.remove('hidden');
+        }
+
+        // NUEVA FUNCIÓN MODIFICADA: Borrar todo el historial Y electrodomésticos
+        function borrarTodoElHistorial() {
+            const userId = getCurrentUserId();
+            
+            // 1. Eliminar registros del historial
+            localStorage.removeItem(`voltify_registros_mensuales_${userId}`);
+            
+            // 2. También eliminar los electrodomésticos actuales guardados
+            localStorage.removeItem(`voltify_electrodomesticos_actuales_${userId}`);
+            
+            // Mostrar mensaje de éxito
+            alert('✅ Historial y electrodomésticos borrados exitosamente. La página se recargará.');
+            
+            // Recargar la página para actualizar la vista
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+
+        function cargarConfiguracionServicio() {
+            const userId = getCurrentUserId();
+            console.log('Cargando configuración para usuario:', userId);
+            
+            const configGuardada = localStorage.getItem(`voltify_configuracion_${userId}`);
+            if (configGuardada) {
+                const config = JSON.parse(configGuardada);
+                
+                // Actualizar información del servicio
+                document.getElementById('historialCompania').textContent = config.compania ? obtenerNombreCompania(config.compania) : 'No configurada';
+                document.getElementById('historialPotencia').textContent = config.potencia ? `${config.potencia} kW` : '- kW';
+                document.getElementById('historialCargoFijo').textContent = config.cargoFijo ? `$${parseInt(config.cargoFijo).toLocaleString()}/mes` : '$ -/mes';
+                document.getElementById('historialPrecioKwh').textContent = config.precioKwh ? `$${parseInt(config.precioKwh).toLocaleString()}` : '$ -';
+                
+                // Calcular y mostrar uso de potencia con animación
+                setTimeout(() => calcularUsoPotencia(config), 500);
+            } else {
+                console.log('No se encontró configuración para usuario:', userId);
+            }
+        }
+
+        function obtenerNombreCompania(codigo) {
+            const companias = {
+                'enel': 'Enel Distribución',
+                'chilquinta': 'Chilquinta Energía',
+                'frontel': 'Frontel',
+                'saesa': 'Saesa',
+                'cge': 'CGE',
+                'lit': 'Luz del Sur (LIT)',
+                'other': 'Otra compañía'
+            };
+            return companias[codigo] || codigo;
+        }
+
+        function calcularUsoPotencia(config) {
+            const potenciaContratada = parseFloat(config.potencia) || 2.0;
+            const userId = getCurrentUserId();
+            const registros = JSON.parse(localStorage.getItem(`voltify_registros_mensuales_${userId}`) || '[]');
+            
+            console.log('Calculando uso de potencia para usuario:', userId, 'Registros:', registros.length);
+            
+            if (registros.length === 0) {
+                actualizarVelocimetro(0, "Sin datos");
+                return;
+            }
+            
+            // Obtener el último registro
+            const ultimoRegistro = registros[registros.length - 1];
+            
+            if (!ultimoRegistro.electrodomesticos || ultimoRegistro.electrodomesticos.length === 0) {
+                actualizarVelocimetro(0, "Sin electrodomésticos");
+                return;
+            }
+
+            // CÁLCULO INTELIGENTE - Usa los datos reales de horas y días
+            let potenciaMaximaSimultanea = 0;
+            let potenciaTotalEstimada = 0;
+            
+            const electrodomesticos = ultimoRegistro.electrodomesticos;
+            
+            electrodomesticos.forEach(electro => {
+                const potenciaElectro = electro.potencia * electro.cantidad;
+                potenciaTotalEstimada += potenciaElectro;
+                
+                if (electro.horasDiarias >= 4) {
+                    potenciaMaximaSimultanea += potenciaElectro;
+                }
+            });
+            
+            if (potenciaMaximaSimultanea === 0) {
+                potenciaMaximaSimultanea = potenciaTotalEstimada * 0.6;
+            }
+            
+            const potenciaMaximaContratada = potenciaContratada * 1000;
+            
+            let porcentajeUso = (potenciaMaximaSimultanea / potenciaMaximaContratada) * 100;
+            
+            const consumoRealKwh = ultimoRegistro.kwhReal || 0;
+            if (consumoRealKwh > 0) {
+                const horasTotalesMes = 30 * 24;
+                const potenciaPromedioReal = (consumoRealKwh * 1000) / horasTotalesMes;
+                porcentajeUso = (porcentajeUso * 0.7) + ((potenciaPromedioReal / potenciaMaximaContratada) * 100 * 0.3);
+            }
+            
+            porcentajeUso = Math.min(100, Math.max(0, porcentajeUso));
+            
+            actualizarVelocimetroConAnimacion(porcentajeUso);
+        }
+
+        function actualizarVelocimetroConAnimacion(porcentajeFinal) {
+            const circle = document.getElementById('potenciaProgressBar');
+            const porcentajeText = document.getElementById('potenciaPorcentaje');
+            const estadoElement = document.getElementById('potenciaEstado');
+            const nivelElement = document.getElementById('potenciaNivel');
+            const recomendacionElement = document.getElementById('potenciaRecomendacion');
+            
+            const circumference = 2 * Math.PI * 15.9155;
+            const dashValueFinal = (porcentajeFinal / 100) * circumference;
+            
+            // Resetear a 0
+            circle.style.strokeDasharray = `0, ${circumference}`;
+            porcentajeText.textContent = '0%';
+            
+            // Determinar colores y estados según el porcentaje final
+            let colorFinal = '#10B981';
+            let estadoFinal = 'Óptimo';
+            let nivelFinal = 'Bajo';
+            let recomendacionFinal = 'Tu uso de potencia está dentro de los límites óptimos.';
+            let estadoColor = 'green';
+            let nivelColor = 'blue';
+            
+            if (porcentajeFinal > 90) {
+                colorFinal = '#f44336';
+                estadoFinal = 'Crítico';
+                nivelFinal = 'Muy Alto';
+                recomendacionFinal = '⚠️ Considera reducir el consumo o aumentar tu potencia contratada.';
+                estadoColor = 'red';
+                nivelColor = 'red';
+            } else if (porcentajeFinal > 80) {
+                colorFinal = '#ff9800';
+                estadoFinal = 'Alto';
+                nivelFinal = 'Alto';
+                recomendacionFinal = '💡 Tu consumo está cerca del límite. Monitorea tus electrodomésticos.';
+                estadoColor = 'orange';
+                nivelColor = 'orange';
+            } else if (porcentajeFinal > 60) {
+                colorFinal = '#ffeb3b';
+                estadoFinal = 'Moderado';
+                nivelFinal = 'Moderado';
+                recomendacionFinal = '📊 Tu consumo está en un nivel aceptable.';
+                estadoColor = 'yellow';
+                nivelColor = 'yellow';
+            }
+            
+            // Animación del porcentaje de 0% al valor final
+            let porcentajeActual = 0;
+            const incremento = porcentajeFinal / 100;
+            const intervalo = setInterval(() => {
+                porcentajeActual += incremento;
+                if (porcentajeActual >= porcentajeFinal) {
+                    porcentajeActual = porcentajeFinal;
+                    clearInterval(intervalo);
+                }
+                
+                const dashValueActual = (porcentajeActual / 100) * circumference;
+                circle.style.strokeDasharray = `${dashValueActual}, ${circumference}`;
+                porcentajeText.textContent = `${Math.round(porcentajeActual)}%`;
+                
+                // Cambiar color gradualmente durante la animación
+                if (porcentajeActual > 90) {
+                    circle.style.stroke = '#f44336';
+                } else if (porcentajeActual > 80) {
+                    circle.style.stroke = '#ff9800';
+                } else if (porcentajeActual > 60) {
+                    circle.style.stroke = '#ffeb3b';
+                } else {
+                    circle.style.stroke = '#10B981';
+                }
+                
+            }, 20);
+            
+            // Actualizar estados y recomendaciones
+            setTimeout(() => {
+                estadoElement.textContent = estadoFinal;
+                nivelElement.textContent = nivelFinal;
+                recomendacionElement.textContent = recomendacionFinal;
+                
+                // Actualizar colores de los badges
+                estadoElement.className = `text-sm font-medium px-3 py-1 rounded-full bg-${estadoColor}-100 text-${estadoColor}-800 dark:bg-${estadoColor}-900/30 dark:text-${estadoColor}-300`;
+                nivelElement.className = `text-sm font-medium px-3 py-1 rounded-full bg-${nivelColor}-100 text-${nivelColor}-800 dark:bg-${nivelColor}-900/30 dark:text-${nivelColor}-300`;
+            }, 2000);
+        }
+
+        function cargarHistorial() {
+            const userId = getCurrentUserId();
+            console.log('Cargando historial para usuario:', userId);
+            
+            let registros = JSON.parse(localStorage.getItem(`voltify_registros_mensuales_${userId}`) || '[]');
+            
+            console.log('Registros encontrados:', registros.length);
+            
+            // ORDENAR REGISTROS POR ORDEN DE CALENDARIO (año y mes)
+            registros.sort((a, b) => {
+                // Primero comparar año
+                if (a.anio !== b.anio) {
+                    return a.anio - b.anio;
+                }
+                // Si el año es igual, comparar mes
+                return a.mes - b.mes;
+            });
+            
+            // Guardar registros ordenados globalmente
+            registrosOrdenados = [...registros];
+            
+            const listaHistorial = document.getElementById('listaHistorial');
+            const listaHistorialCompleta = document.getElementById('listaHistorialCompleta');
+            const sinHistorial = document.getElementById('sinHistorial');
+            const btnVerTodos = document.getElementById('btnVerTodosHistorial');
+            
+            if (registros.length === 0) {
+                listaHistorial.innerHTML = '';
+                sinHistorial.classList.remove('hidden');
+                btnVerTodos.classList.add('hidden');
+                return;
+            }
+            
+            sinHistorial.classList.add('hidden');
+            
+            // Mostrar solo los primeros 3 registros (más recientes según orden de calendario)
+            const registrosRecientes = [...registros].slice(-3).reverse(); // Tomar los últimos 3 y revertir para mostrar el más reciente primero
+            
+            // Generar HTML para los primeros 3 registros
+            listaHistorial.innerHTML = registrosRecientes.map(registro => generarHTMLRegistro(registro)).join('');
+            
+            // Generar HTML para todos los registros
+            const todosRegistros = [...registros].reverse(); // Revertir para mostrar el más reciente primero
+            listaHistorialCompleta.innerHTML = todosRegistros.map(registro => generarHTMLRegistro(registro)).join('');
+            
+            // Mostrar botón "Ver todos" solo si hay más de 3 registros
+            if (registros.length > 3) {
+                btnVerTodos.classList.remove('hidden');
+            } else {
+                btnVerTodos.classList.add('hidden');
+            }
+        }
+
+        function generarHTMLRegistro(registro) {
+            const fecha = new Date(registro.fecha);
+            const fechaFormateada = fecha.toLocaleDateString('es-CL', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            return `
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <h3 class="font-semibold text-gray-800 dark:text-white">${registro.mesNombre} ${registro.anio}</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            Registrado el ${fechaFormateada}
+                        </p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-lg font-bold text-green-600 dark:text-green-400">
+                            $${Math.round(registro.totalPagar).toLocaleString()}
+                        </div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">
+                            ${registro.kwhReal} kWh
+                        </div>
+                    </div>
+                </div>
+                ${registro.nota ? `
+                <div class="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-700">
+                    <p class="text-sm text-blue-700 dark:text-blue-300">${registro.nota}</p>
+                </div>
+                ` : ''}
+            </div>
+            `;
+        }
+
+        function cargarGraficos() {
+            const userId = getCurrentUserId();
+            let registros = JSON.parse(localStorage.getItem(`voltify_registros_mensuales_${userId}`) || '[]');
+            
+            if (registros.length === 0) {
+                return;
+            }
+            
+            // ORDENAR REGISTROS POR ORDEN DE CALENDARIO (año y mes) para los gráficos
+            registros.sort((a, b) => {
+                if (a.anio !== b.anio) {
+                    return a.anio - b.anio;
+                }
+                return a.mes - b.mes;
+            });
+            
+            // Tomar los últimos 12 meses (ya ordenados cronológicamente)
+            const ultimos12Meses = registros.slice(-12);
+            
+            // Generar gráfico combinado
+            generarGraficoCombinado(ultimos12Meses);
+            
+            // Generar gráfico lineal por categorías
+            generarGraficoLinealCategorias(ultimos12Meses);
+            
+            // Generar gráfico circular de categorías
+            generarGraficoCircular(ultimos12Meses);
+        }
+
+        // FUNCIÓN MEJORADA: Gráfico combinado con el valor más alto como límite
+        function generarGraficoCombinado(datos) {
+            const container = document.getElementById('graficoCombinado');
+            const leyenda = document.getElementById('leyendaCombinada');
+            
+            if (datos.length === 0) {
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            // Calcular rangos para ambos ejes
+            const consumos = datos.map(d => d.kwhReal);
+            const costos = datos.map(d => d.totalPagar);
+            
+            const maxConsumo = Math.max(...consumos);
+            const minConsumo = Math.min(...consumos);
+            
+            const maxCosto = Math.max(...costos);
+            const minCosto = Math.min(...costos);
+            
+            // Función para crear escala con el valor más alto como límite
+            function crearEscalaConLimite(maxValor) {
+                if (maxValor === 0) return [0, 10, 20, 30, 40, 50];
+                
+                // Calcular la potencia de 10 más cercana
+                const potencia = Math.floor(Math.log10(maxValor));
+                const base = Math.pow(10, potencia);
+                
+                // Determinar el multiplicador apropiado
+                let multiplicador = 1;
+                if (maxValor <= base) {
+                    multiplicador = 1;
+                } else if (maxValor <= base * 2) {
+                    multiplicador = 2;
+                } else if (maxValor <= base * 5) {
+                    multiplicador = 5;
+                } else {
+                    multiplicador = 10;
+                }
+                
+                // Calcular el límite superior (redondeado hacia arriba)
+                const limiteSuperior = Math.ceil(maxValor / (base * multiplicador)) * base * multiplicador;
+                
+                // Crear escala con 5 pasos
+                const numPasos = 5;
+                const paso = limiteSuperior / numPasos;
+                const valores = [];
+                
+                for (let i = 0; i <= numPasos; i++) {
+                    valores.push(Math.round(paso * i));
+                }
+                
+                return valores;
+            }
+            
+            const escalaConsumo = crearEscalaConLimite(maxConsumo);
+            const escalaCosto = crearEscalaConLimite(maxCosto);
+            
+            const escalaMaxConsumo = Math.max(...escalaConsumo);
+            const escalaMaxCosto = Math.max(...escalaCosto);
+            
+            const width = container.clientWidth - 80;
+            const height = 280;
+            const padding = 60;
+            
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '100%');
+            svg.setAttribute('viewBox', `0 0 ${width + padding * 2} ${height + padding * 2}`);
+            
+            // Crear ejes principales
+            // Eje Y izquierdo (Consumo)
+            const ejeYConsumo = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            ejeYConsumo.setAttribute('x1', padding);
+            ejeYConsumo.setAttribute('y1', padding);
+            ejeYConsumo.setAttribute('x2', padding);
+            ejeYConsumo.setAttribute('y2', padding + height);
+            ejeYConsumo.setAttribute('stroke', '#9CA3AF');
+            ejeYConsumo.setAttribute('stroke-width', '1');
+            
+            // Eje Y derecho (Costo)
+            const ejeYCosto = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            ejeYCosto.setAttribute('x1', padding + width);
+            ejeYCosto.setAttribute('y1', padding);
+            ejeYCosto.setAttribute('x2', padding + width);
+            ejeYCosto.setAttribute('y2', padding + height);
+            ejeYCosto.setAttribute('stroke', '#9CA3AF');
+            ejeYCosto.setAttribute('stroke-width', '1');
+            
+            // Eje X
+            const ejeX = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            ejeX.setAttribute('x1', padding);
+            ejeX.setAttribute('y1', padding + height);
+            ejeX.setAttribute('x2', padding + width);
+            ejeX.setAttribute('y2', padding + height);
+            ejeX.setAttribute('stroke', '#9CA3AF');
+            ejeX.setAttribute('stroke-width', '1');
+            
+            svg.appendChild(ejeYConsumo);
+            svg.appendChild(ejeYCosto);
+            svg.appendChild(ejeX);
+            
+            // Función para formatear números (1000 -> 1.000, 10000 -> 10.000)
+            function formatearNumero(num) {
+                if (num >= 1000) {
+                    return num.toLocaleString('es-CL');
+                }
+                return num.toString();
+            }
+            
+            // Crear líneas de guía y valores para el eje Y izquierdo (Consumo)
+            escalaConsumo.forEach((valor, index) => {
+                const y = padding + height - (valor / escalaMaxConsumo) * height;
+                
+                // Línea de guía
+                const lineaGuia = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                lineaGuia.setAttribute('x1', padding);
+                lineaGuia.setAttribute('y1', y);
+                lineaGuia.setAttribute('x2', padding + width);
+                lineaGuia.setAttribute('y2', y);
+                lineaGuia.setAttribute('stroke', '#E5E7EB');
+                lineaGuia.setAttribute('stroke-width', '0.5');
+                lineaGuia.setAttribute('stroke-dasharray', '2,2');
+                
+                // Valor del consumo
+                const textConsumo = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                textConsumo.setAttribute('x', padding - 8);
+                textConsumo.setAttribute('y', y + 3);
+                textConsumo.setAttribute('text-anchor', 'end');
+                textConsumo.setAttribute('font-size', '10');
+                textConsumo.setAttribute('fill', '#6B7280');
+                textConsumo.textContent = formatearNumero(valor);
+                
+                svg.appendChild(lineaGuia);
+                svg.appendChild(textConsumo);
+            });
+            
+            // Crear líneas de guía y valores para el eje Y derecho (Costo)
+            escalaCosto.forEach((valor, index) => {
+                const y = padding + height - (valor / escalaMaxCosto) * height;
+                
+                // Valor del costo
+                const textCosto = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                textCosto.setAttribute('x', padding + width + 8);
+                textCosto.setAttribute('y', y + 3);
+                textCosto.setAttribute('text-anchor', 'start');
+                textCosto.setAttribute('font-size', '10');
+                textCosto.setAttribute('fill', '#6B7280');
+                textCosto.textContent = `$${formatearNumero(valor)}`;
+                
+                svg.appendChild(textCosto);
+            });
+            
+            // Crear puntos y líneas para consumo (kWh)
+            const puntosConsumo = datos.map((dato, index) => {
+                const x = padding + (index / (datos.length - 1)) * width;
+                const y = padding + height - (dato.kwhReal / escalaMaxConsumo) * height;
+                return `${x},${y}`;
+            }).join(' ');
+            
+            const lineaConsumo = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+            lineaConsumo.setAttribute('points', puntosConsumo);
+            lineaConsumo.setAttribute('fill', 'none');
+            lineaConsumo.setAttribute('stroke', '#3B82F6');
+            lineaConsumo.setAttribute('stroke-width', '3');
+            lineaConsumo.setAttribute('stroke-linecap', 'round');
+            lineaConsumo.setAttribute('stroke-linejoin', 'round');
+            lineaConsumo.style.opacity = '0';
+            
+            // Crear puntos y líneas para costo ($)
+            const puntosCosto = datos.map((dato, index) => {
+                const x = padding + (index / (datos.length - 1)) * width;
+                const y = padding + height - (dato.totalPagar / escalaMaxCosto) * height;
+                return `${x},${y}`;
+            }).join(' ');
+            
+            const lineaCosto = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+            lineaCosto.setAttribute('points', puntosCosto);
+            lineaCosto.setAttribute('fill', 'none');
+            lineaCosto.setAttribute('stroke', '#10B981');
+            lineaCosto.setAttribute('stroke-width', '3');
+            lineaCosto.setAttribute('stroke-linecap', 'round');
+            lineaCosto.setAttribute('stroke-linejoin', 'round');
+            lineaCosto.style.opacity = '0';
+            
+            // Animación de las líneas
+            setTimeout(() => {
+                lineaConsumo.style.opacity = '1';
+                lineaCosto.style.opacity = '1';
+                lineaConsumo.style.transition = 'opacity 1s ease-in-out';
+                lineaCosto.style.transition = 'opacity 1s ease-in-out';
+            }, 500);
+            
+            // Crear puntos en los datos
+            datos.forEach((dato, index) => {
+                const x = padding + (index / (datos.length - 1)) * width;
+                
+                // Punto consumo
+                const yConsumo = padding + height - (dato.kwhReal / escalaMaxConsumo) * height;
+                const circleConsumo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circleConsumo.setAttribute('cx', x);
+                circleConsumo.setAttribute('cy', yConsumo);
+                circleConsumo.setAttribute('r', '4');
+                circleConsumo.setAttribute('fill', '#3B82F6');
+                circleConsumo.setAttribute('stroke', 'white');
+                circleConsumo.setAttribute('stroke-width', '2');
+                circleConsumo.style.opacity = '0';
+                
+                // Punto costo
+                const yCosto = padding + height - (dato.totalPagar / escalaMaxCosto) * height;
+                const circleCosto = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circleCosto.setAttribute('cx', x);
+                circleCosto.setAttribute('cy', yCosto);
+                circleCosto.setAttribute('r', '4');
+                circleCosto.setAttribute('fill', '#10B981');
+                circleCosto.setAttribute('stroke', 'white');
+                circleCosto.setAttribute('stroke-width', '2');
+                circleCosto.style.opacity = '0';
+                
+                setTimeout(() => {
+                    circleConsumo.style.opacity = '1';
+                    circleCosto.style.opacity = '1';
+                    circleConsumo.style.transition = 'opacity 0.5s ease-in-out';
+                    circleCosto.style.transition = 'opacity 0.5s ease-in-out';
+                }, 800 + index * 100);
+                
+                // Etiqueta del mes
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', x);
+                text.setAttribute('y', height + padding + 15);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '10');
+                text.setAttribute('fill', '#6B7280');
+                text.textContent = dato.mesNombre.substring(0, 3);
+                
+                svg.appendChild(text);
+                svg.appendChild(circleConsumo);
+                svg.appendChild(circleCosto);
+            });
+            
+            svg.appendChild(lineaConsumo);
+            svg.appendChild(lineaCosto);
+            
+            container.appendChild(svg);
+            
+            // Crear leyenda
+            leyenda.innerHTML = `
+                <div class="flex items-center">
+                    <div class="w-4 h-1 bg-blue-500 mr-2"></div>
+                    <span class="text-sm text-gray-700 dark:text-gray-300">Consumo (kWh)</span>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-4 h-1 bg-green-500 mr-2"></div>
+                    <span class="text-sm text-gray-700 dark:text-gray-300">Costo ($)</span>
+                </div>
+            `;
+        }
+
+        // FUNCIÓN MODIFICADA: Gráfico lineal por categorías a través del tiempo con leyenda
+        function generarGraficoLinealCategorias(datos) {
+            const container = document.getElementById('graficoLinealCategorias');
+            const leyendaContainer = document.getElementById('leyendaCategoriasLineal');
+            
+            if (datos.length === 0) {
+                return;
+            }
+            
+            container.innerHTML = '';
+            leyendaContainer.innerHTML = '';
+            
+            // Definir categorías y colores
+            const categorias = {
+                'climatizacion': { nombre: 'Climatización', color: '#FF6384' },
+                'linea_blanca': { nombre: 'Línea Blanca', color: '#36A2EB' },
+                'iluminacion': { nombre: 'Iluminación', color: '#FFCE56' },
+                'tecnologia': { nombre: 'Tecnología', color: '#4BC0C0' },
+                'otros': { nombre: 'Otros', color: '#9966FF' }
+            };
+            
+            // Calcular consumo por categoría para cada mes
+            const datosPorCategoria = {};
+            const categoriasConDatos = new Set();
+            
+            Object.keys(categorias).forEach(categoria => {
+                datosPorCategoria[categoria] = datos.map(mes => {
+                    if (!mes.electrodomesticos) return 0;
+                    
+                    const consumo = mes.electrodomesticos
+                        .filter(electro => electro.categoria === categoria)
+                        .reduce((total, electro) => {
+                            return total + (electro.potencia * electro.cantidad * electro.horasDiarias * electro.diasMensuales) / 1000;
+                        }, 0);
+                    
+                    if (consumo > 0) categoriasConDatos.add(categoria);
+                    return consumo;
+                });
+            });
+            
+            // Filtrar solo categorías con datos
+            const categoriasActivas = Array.from(categoriasConDatos);
+            
+            if (categoriasActivas.length === 0) {
+                return;
+            }
+            
+            // Encontrar el máximo consumo para la escala
+            let maxConsumo = 0;
+            categoriasActivas.forEach(categoria => {
+                const maxCategoria = Math.max(...datosPorCategoria[categoria]);
+                if (maxCategoria > maxConsumo) {
+                    maxConsumo = maxCategoria;
+                }
+            });
+            
+            // Función para crear escala
+            function crearEscalaConLimite(maxValor) {
+                if (maxValor === 0) return [0, 10, 20, 30, 40, 50];
+                
+                const potencia = Math.floor(Math.log10(maxValor));
+                const base = Math.pow(10, potencia);
+                
+                let multiplicador = 1;
+                if (maxValor <= base) {
+                    multiplicador = 1;
+                } else if (maxValor <= base * 2) {
+                    multiplicador = 2;
+                } else if (maxValor <= base * 5) {
+                    multiplicador = 5;
+                } else {
+                    multiplicador = 10;
+                }
+                
+                const limiteSuperior = Math.ceil(maxValor / (base * multiplicador)) * base * multiplicador;
+                const numPasos = 5;
+                const paso = limiteSuperior / numPasos;
+                const valores = [];
+                
+                for (let i = 0; i <= numPasos; i++) {
+                    valores.push(Math.round(paso * i));
+                }
+                
+                return valores;
+            }
+            
+            const escalaConsumo = crearEscalaConLimite(maxConsumo);
+            const escalaMaxConsumo = Math.max(...escalaConsumo);
+            
+            const width = container.clientWidth - 60;
+            const height = 200;
+            const padding = 50;
+            
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '100%');
+            svg.setAttribute('viewBox', `0 0 ${width + padding * 2} ${height + padding * 2}`);
+            
+            // Crear ejes
+            const ejeY = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            ejeY.setAttribute('x1', padding);
+            ejeY.setAttribute('y1', padding);
+            ejeY.setAttribute('x2', padding);
+            ejeY.setAttribute('y2', padding + height);
+            ejeY.setAttribute('stroke', '#9CA3AF');
+            ejeY.setAttribute('stroke-width', '1');
+            
+            const ejeX = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            ejeX.setAttribute('x1', padding);
+            ejeX.setAttribute('y1', padding + height);
+            ejeX.setAttribute('x2', padding + width);
+            ejeX.setAttribute('y2', padding + height);
+            ejeX.setAttribute('stroke', '#9CA3AF');
+            ejeX.setAttribute('stroke-width', '1');
+            
+            svg.appendChild(ejeY);
+            svg.appendChild(ejeX);
+            
+            // Función para formatear números
+            function formatearNumero(num) {
+                if (num >= 1000) {
+                    return num.toLocaleString('es-CL');
+                }
+                return num.toString();
+            }
+            
+            // Crear líneas de guía y valores para el eje Y
+            escalaConsumo.forEach((valor, index) => {
+                const y = padding + height - (valor / escalaMaxConsumo) * height;
+                
+                // Línea de guía
+                const lineaGuia = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                lineaGuia.setAttribute('x1', padding);
+                lineaGuia.setAttribute('y1', y);
+                lineaGuia.setAttribute('x2', padding + width);
+                lineaGuia.setAttribute('y2', y);
+                lineaGuia.setAttribute('stroke', '#E5E7EB');
+                lineaGuia.setAttribute('stroke-width', '0.5');
+                lineaGuia.setAttribute('stroke-dasharray', '2,2');
+                
+                // Valor del consumo
+                const textConsumo = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                textConsumo.setAttribute('x', padding - 8);
+                textConsumo.setAttribute('y', y + 3);
+                textConsumo.setAttribute('text-anchor', 'end');
+                textConsumo.setAttribute('font-size', '10');
+                textConsumo.setAttribute('fill', '#6B7280');
+                textConsumo.textContent = formatearNumero(valor);
+                
+                svg.appendChild(lineaGuia);
+                svg.appendChild(textConsumo);
+            });
+            
+            // Crear leyenda
+            categoriasActivas.forEach((categoria, catIndex) => {
+                const leyendaItem = document.createElement('div');
+                leyendaItem.className = 'flex items-center mb-1';
+                leyendaItem.innerHTML = `
+                    <div class="w-3 h-3 mr-2 rounded-sm" style="background-color: ${categorias[categoria].color}"></div>
+                    <span class="text-xs text-gray-700 dark:text-gray-300">${categorias[categoria].nombre}</span>
+                `;
+                leyendaContainer.appendChild(leyendaItem);
+            });
+            
+            // Crear líneas para cada categoría activa
+            categoriasActivas.forEach((categoria, catIndex) => {
+                const consumos = datosPorCategoria[categoria];
+                
+                // Crear puntos para la línea
+                const puntos = consumos.map((consumo, index) => {
+                    const x = padding + (index / (datos.length - 1)) * width;
+                    const y = padding + height - (consumo / escalaMaxConsumo) * height;
+                    return `${x},${y}`;
+                }).join(' ');
+                
+                // Crear línea
+                const linea = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+                linea.setAttribute('points', puntos);
+                linea.setAttribute('fill', 'none');
+                linea.setAttribute('stroke', categorias[categoria].color);
+                linea.setAttribute('stroke-width', '2');
+                linea.setAttribute('stroke-linecap', 'round');
+                linea.setAttribute('stroke-linejoin', 'round');
+                linea.style.opacity = '0';
+                
+                // Animación de la línea
+                setTimeout(() => {
+                    linea.style.opacity = '1';
+                    linea.style.transition = 'opacity 1s ease-in-out';
+                }, 300 + catIndex * 200);
+                
+                svg.appendChild(linea);
+                
+                // Crear puntos en los datos
+                consumos.forEach((consumo, index) => {
+                    if (consumo > 0) {
+                        const x = padding + (index / (datos.length - 1)) * width;
+                        const y = padding + height - (consumo / escalaMaxConsumo) * height;
+                        
+                        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                        circle.setAttribute('cx', x);
+                        circle.setAttribute('cy', y);
+                        circle.setAttribute('r', '3');
+                        circle.setAttribute('fill', categorias[categoria].color);
+                        circle.setAttribute('stroke', 'white');
+                        circle.setAttribute('stroke-width', '1');
+                        circle.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            circle.style.opacity = '1';
+                            circle.style.transition = 'opacity 0.5s ease-in-out';
+                        }, 500 + catIndex * 200 + index * 100);
+                        
+                        svg.appendChild(circle);
+                    }
+                });
+            });
+            
+            // Crear etiquetas de meses en el eje X
+            datos.forEach((dato, index) => {
+                const x = padding + (index / (datos.length - 1)) * width;
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', x);
+                text.setAttribute('y', height + padding + 15);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '10');
+                text.setAttribute('fill', '#6B7280');
+                text.textContent = dato.mesNombre.substring(0, 3);
+                
+                svg.appendChild(text);
+            });
+            
+            container.appendChild(svg);
+        }
+
+        function generarGraficoCircular(datos) {
+            const container = document.getElementById('graficoCircularContainer');
+            const leyendaContainer = document.getElementById('leyendaCategoriasCircular');
+            
+            if (datos.length === 0) {
+                return;
+            }
+            
+            container.innerHTML = '';
+            leyendaContainer.innerHTML = '';
+            
+            // Calcular distribución de categorías del último mes
+            const ultimoMes = datos[datos.length - 1];
+            const categorias = {
+                'climatizacion': { nombre: 'Climatización', consumo: 0, color: '#FF6384' },
+                'linea_blanca': { nombre: 'Línea Blanca', consumo: 0, color: '#36A2EB' },
+                'iluminacion': { nombre: 'Iluminación', consumo: 0, color: '#FFCE56' },
+                'tecnologia': { nombre: 'Tecnología', consumo: 0, color: '#4BC0C0' },
+                'otros': { nombre: 'Otros', consumo: 0, color: '#9966FF' }
+            };
+            
+            if (ultimoMes.electrodomesticos) {
+                ultimoMes.electrodomesticos.forEach(electro => {
+                    const consumo = (electro.potencia * electro.cantidad * electro.horasDiarias * electro.diasMensuales) / 1000;
+                    categorias[electro.categoria].consumo += consumo;
+                });
+            }
+            
+            // Filtrar categorías con consumo
+            const categoriasConConsumo = Object.entries(categorias)
+                .filter(([_, datosCat]) => datosCat.consumo > 0)
+                .sort((a, b) => b[1].consumo - a[1].consumo);
+            
+            if (categoriasConConsumo.length === 0) {
+                return;
+            }
+            
+            const totalConsumo = categoriasConConsumo.reduce((sum, [_, datosCat]) => sum + datosCat.consumo, 0);
+            
+            // Generar leyenda primero
+            categoriasConConsumo.forEach(([categoria, datosCat]) => {
+                const porcentaje = (datosCat.consumo / totalConsumo * 100).toFixed(1);
+                const leyendaItem = document.createElement('div');
+                leyendaItem.className = 'flex items-center mb-1';
+                leyendaItem.innerHTML = `
+                    <div class="w-3 h-3 mr-2 rounded-sm" style="background-color: ${datosCat.color}"></div>
+                    <span class="text-xs text-gray-700 dark:text-gray-300">
+                        ${datosCat.nombre}: ${porcentaje}% (${datosCat.consumo.toFixed(1)} kWh)
+                    </span>
+                `;
+                leyendaContainer.appendChild(leyendaItem);
+            });
+            
+            // Generar gráfico circular con SVG
+            const size = 160; // Reducir tamaño para dejar espacio a la leyenda
+            const radius = size / 2 - 10;
+            const center = size / 2;
+            
+            let startAngle = 0;
+            const segments = [];
+            
+            // Si solo hay una categoría, crear un círculo completo
+            if (categoriasConConsumo.length === 1) {
+                const [categoria, datosCat] = categoriasConConsumo[0];
+                const porcentaje = datosCat.consumo / totalConsumo;
+                
+                // Crear un círculo completo para una sola categoría
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', center);
+                circle.setAttribute('cy', center);
+                circle.setAttribute('r', radius);
+                circle.setAttribute('fill', datosCat.color);
+                circle.setAttribute('stroke', 'white');
+                circle.setAttribute('stroke-width', '2');
+                circle.style.opacity = '0';
+                circle.style.transform = 'scale(0)';
+                circle.style.transformOrigin = 'center';
+                circle.style.transition = 'all 0.8s ease-in-out';
+                
+                segments.push({ element: circle, categoria: datosCat.nombre, porcentaje: (porcentaje * 100).toFixed(1) });
+            } else {
+                // Múltiples categorías - crear segmentos
+                categoriasConConsumo.forEach(([categoria, datosCat]) => {
+                    const porcentaje = datosCat.consumo / totalConsumo;
+                    const angle = porcentaje * 2 * Math.PI;
+                    const endAngle = startAngle + angle;
+                    
+                    // Calcular puntos del arco
+                    const x1 = center + radius * Math.cos(startAngle);
+                    const y1 = center + radius * Math.sin(startAngle);
+                    const x2 = center + radius * Math.cos(endAngle);
+                    const y2 = center + radius * Math.sin(endAngle);
+                    
+                    // Determinar si el arco es mayor a 180 grados
+                    const largeArcFlag = angle > Math.PI ? 1 : 0;
+                    
+                    // Crear path para el segmento
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    const d = [
+                        `M ${center} ${center}`,
+                        `L ${x1} ${y1}`,
+                        `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
+                        'Z'
+                    ].join(' ');
+                    
+                    path.setAttribute('d', d);
+                    path.setAttribute('fill', datosCat.color);
+                    path.setAttribute('stroke', 'white');
+                    path.setAttribute('stroke-width', '2');
+                    path.style.opacity = '0';
+                    path.style.transform = 'scale(0)';
+                    path.style.transformOrigin = 'center';
+                    path.style.transition = 'all 0.8s ease-in-out';
+                    
+                    segments.push({ element: path, categoria: datosCat.nombre, porcentaje: (porcentaje * 100).toFixed(1) });
+                    startAngle = endAngle;
+                });
+            }
+            
+            // Crear SVG
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '100%');
+            svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+            
+            // Añadir segmentos con animación escalonada
+            segments.forEach((segment, index) => {
+                svg.appendChild(segment.element);
+                
+                setTimeout(() => {
+                    segment.element.style.opacity = '1';
+                    segment.element.style.transform = 'scale(1)';
+                }, 300 + index * 200);
+            });
+            
+            // Añadir texto central
+            const textGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            textGroup.setAttribute('text-anchor', 'middle');
+            
+            const textTotal = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            textTotal.setAttribute('x', center);
+            textTotal.setAttribute('y', center - 5);
+            textTotal.setAttribute('font-size', '14');
+            textTotal.setAttribute('font-weight', 'bold');
+            textTotal.setAttribute('fill', '#374151');
+            textTotal.textContent = `${totalConsumo.toFixed(0)}`;
+            
+            const textLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            textLabel.setAttribute('x', center);
+            textLabel.setAttribute('y', center + 12);
+            textLabel.setAttribute('font-size', '10');
+            textLabel.setAttribute('fill', '#6B7280');
+            textLabel.textContent = 'kWh total';
+            
+            textGroup.appendChild(textTotal);
+            textGroup.appendChild(textLabel);
+            svg.appendChild(textGroup);
+            
+            container.appendChild(svg);
+        }
+    });
+</script>
+{% endblock %}
+[file content end]

@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>50 Datos Curiosos sobre Energía Eléctrica - Voltify Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .category-card {
+            transition: all 0.3s ease;
+        }
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+        .fact-card {
+            transition: all 0.3s ease;
+        }
+        .fact-card:hover {
+            transform: scale(1.02);
+        }
+        .search-highlight {
+            background-color: #fef08a;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div class="flex items-center">
+                    <a href="{% url 'inicio' %}" class="flex items-center group">
+                        <div class="text-3xl mr-3 text-blue-600 transition-transform group-hover:scale-110">⚡</div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Voltify Pro</h1>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Biblioteca de Datos Curiosos</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'seleccionar_artefacto_hogar' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                        Volver a Electrodomésticos
+                    </a>
+                    <button id="themeToggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Hero Section -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4">
+                50 Datos Curiosos sobre Energía Eléctrica
+            </h1>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Descubre información matemáticamente fascinante sobre el consumo eléctrico, 
+                eficiencia energética y el impacto económico de tus electrodomésticos
+            </p>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div class="w-full md:w-auto">
+                    <div class="relative">
+                        <input type="text" id="searchInput" placeholder="Buscar datos curiosos..." 
+                               class="w-full md:w-80 px-4 py-3 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button class="filter-btn px-4 py-2 rounded-lg bg-blue-500 text-white font-medium" data-category="all">
+                        Todos
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-medium" data-category="matematica">
+                        Matemática
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-medium" data-category="ahorro">
+                        Ahorro
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-medium" data-category="eficiencia">
+                        Eficiencia
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-medium" data-category="tecnologia">
+                        Tecnología
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center border border-gray-200 dark:border-gray-700">
+                <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="totalFacts">50</div>
+                <div class="text-gray-600 dark:text-gray-400 text-sm">Datos Totales</div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center border border-gray-200 dark:border-gray-700">
+                <div class="text-2xl font-bold text-green-600 dark:text-green-400" id="visibleFacts">50</div>
+                <div class="text-gray-600 dark:text-gray-400 text-sm">Mostrando</div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center border border-gray-200 dark:border-gray-700">
+                <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">5</div>
+                <div class="text-gray-600 dark:text-gray-400 text-sm">Categorías</div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center border border-gray-200 dark:border-gray-700">
+                <div class="text-2xl font-bold text-orange-600 dark:text-orange-400">10+</div>
+                <div class="text-gray-600 dark:text-gray-400 text-sm">Fórmulas</div>
+            </div>
+        </div>
+
+        <!-- Facts Grid -->
+        <div id="factsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Los datos curiosos se cargarán aquí dinámicamente -->
+        </div>
+
+        <!-- Load More Button -->
+        <div class="text-center mt-12">
+            <button id="loadMoreBtn" class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105">
+                <i class="fas fa-plus-circle mr-2"></i>
+                Cargar Más Datos Curiosos
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex items-center justify-center mb-4">
+                <div class="text-2xl mr-2">⚡</div>
+                <div class="text-xl font-bold">Voltify Pro</div>
+            </div>
+            <p class="text-gray-400">
+                Control de energía inteligente para hogares chilenos
+            </p>
+            <div class="mt-4 text-sm text-gray-400">
+                <p>&copy; 2025 Voltify Pro. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Datos curiosos - 50 elementos organizados por categorías
+        const factsData = [
+            // Categoría: Matemática (10)
+            {
+                id: 1,
+                category: "matematica",
+                title: "Fórmula Universal del Consumo",
+                content: "Tu consumo mensual se calcula: (Watts × Horas × Días) ÷ 1000 = kWh. Un televisor de 100W usado 4h/día × 30 días = (100×4×30)÷1000 = 12 kWh = $1,440.",
+                icon: "🧮",
+                color: "blue"
+            },
+            {
+                id: 2,
+                category: "matematica",
+                title: "Crecimiento Exponencial",
+                content: "Un aumento del 7% mensual en consumo significa pagar 2.25 veces más en 1 año: (1.07)¹² = 2.25. ¡Pequeños cambios generan grandes impactos!",
+                icon: "📈",
+                color: "blue"
+            },
+            {
+                id: 3,
+                category: "matematica",
+                title: "Ley del 80/20 Eléctrico",
+                content: "El 20% de tus electrodomésticos genera el 80% de tu consumo. Identificar esos 'villanos energéticos' puede ahorrarte hasta $60,000 anuales.",
+                icon: "⚖️",
+                color: "blue"
+            },
+            {
+                id: 4,
+                category: "matematica",
+                title: "Interés Compuesto Energético",
+                content: "Reducir tu consumo un 5% mensual significa ahorrar el 46% anual: 1 - (0.95)¹² = 0.46. ¡El ahorro se compone como el interés bancario!",
+                icon: "💰",
+                color: "blue"
+            },
+            {
+                id: 5,
+                category: "matematica",
+                title: "Suma de Potencias",
+                content: "Si todos tus electrodomésticos funcionaran juntos: Σ(Potencia × Cantidad) = Total Watts. Un hogar típico suma 8,000-12,000W vs 2,200-4,400W contratados.",
+                icon: "🔢",
+                color: "blue"
+            },
+            {
+                id: 6,
+                category: "matematica",
+                title: "Geometría del Ahorro",
+                content: "Reducir potencia de 4.4kW a 3.3kW ahorra $7,500 mensuales. Equivale a eliminar Netflix Premium + Spotify cada mes, para siempre.",
+                icon: "📐",
+                color: "blue"
+            },
+            {
+                id: 7,
+                category: "matematica",
+                title: "Velocidad de la Luz en Pesos",
+                content: "La energía consumida en 1 segundo (300 kWh) costaría $36,000. Suficiente para que la luz viaje Santiago-Concepción 7.5 veces.",
+                icon: "⚡",
+                color: "blue"
+            },
+            {
+                id: 8,
+                category: "matematica",
+                title: "Patrones Estacionales",
+                content: "Si tu consumo aumenta 15% cada invierno, en 5 años pagas el DOBLE en meses fríos: Consumo × (1.15)⁵ = 2.01 × Consumo inicial.",
+                icon: "🌡️",
+                color: "blue"
+            },
+            {
+                id: 9,
+                category: "matematica",
+                title: "Eficiencia Exponencial",
+                content: "Cambiar 5 focos incandescentes (60W) por LED (9W) ahorra: (60-9)×5×4h×30d = 30,600 Wh/mes = 30.6 kWh = $3,672 mensuales.",
+                icon: "💡",
+                color: "blue"
+            },
+            {
+                id: 10,
+                category: "matematica",
+                title: "Programación Óptima",
+                content: "Usar lavadora 3 veces/semana vs diario ahorra: (500W × 2h × 4 días) × 4 semanas = 16 kWh/mes = $1,920. ¡1 mes gratis de electricidad al año!",
+                icon: "⏰",
+                color: "blue"
+            },
+
+            // Categoría: Ahorro (10)
+            {
+                id: 11,
+                category: "ahorro",
+                title: "Ley del Mantenimiento",
+                content: "Refrigerador con sellos dañados consume 30% más: De 150W a 195W = (45W × 24h × 30d) = 32.4 kWh extra = $3,888 mensuales.",
+                icon: "🔧",
+                color: "green"
+            },
+            {
+                id: 12,
+                category: "ahorro",
+                title: "Standby Matemático",
+                content: "10 dispositivos en standby (5W cada uno) consumen: 10 × 5W × 24h × 30d = 36 kWh/mes = $4,320 anuales. ¡Regalas 1 celular nuevo anual!",
+                icon: "🔌",
+                color: "green"
+            },
+            {
+                id: 13,
+                category: "ahorro",
+                title: "Termodinámica Doméstica",
+                content: "Bajar termostato de 22°C a 20°C ahorra ~7%: Calefactor 2000W usado 5h/día: 2000W × 5h × 0.07 × 30d = 21 kWh = $2,520 mensuales.",
+                icon: "🌡️",
+                color: "green"
+            },
+            {
+                id: 14,
+                category: "ahorro",
+                title: "Impacto del Tiempo",
+                content: "Reducir 1 hora diaria en aire acondicionado 1500W ahorra: (1500W × 1h × 30d) ÷ 1000 = 45 kWh = $5,400 mensuales. ¡3 meses gratis al año!",
+                icon: "⏱️",
+                color: "green"
+            },
+            {
+                id: 15,
+                category: "ahorro",
+                title: "Elección Inteligente",
+                content: "Refrigerador eficiente (150W) vs antiguo (300W) ahorra: (300-150)W × 24h × 30d ÷ 1000 = 108 kWh/mes = $12,960 anuales.",
+                icon: "🏆",
+                color: "green"
+            },
+            {
+                id: 16,
+                category: "ahorro",
+                title: "Matemáticas del Mantenimiento",
+                content: "Aire acondicionado sucio consume 20% más: De 1200W a 1440W = (240W × 4h × 30d) ÷ 1000 = 28.8 kWh extra = $3,456 mensuales.",
+                icon: "🛠️",
+                color: "green"
+            },
+            {
+                id: 17,
+                category: "ahorro",
+                title: "Costo Oculto",
+                content: "Cargador de laptop conectado (5W) 24/7 consume: 5W × 24h × 30d ÷ 1000 = 3.6 kWh = $432 mensuales. ¡Vampiros energéticos suman!",
+                icon: "💻",
+                color: "green"
+            },
+            {
+                id: 18,
+                category: "ahorro",
+                title: "Energía Potencial",
+                content: "Energía que consume microondas (1000W) en 1 minuto (0.0167 kWh) podría cargar smartphone 3 veces completas.",
+                icon: "🔋",
+                color: "green"
+            },
+            {
+                id: 19,
+                category: "ahorro",
+                title: "Agua Caliente Inteligente",
+                content: "Termo eléctrico de 1500W usado 2h menos diarias ahorra: 1500W × 2h × 30d ÷ 1000 = 90 kWh = $10,800 anuales.",
+                icon: "🚿",
+                color: "green"
+            },
+            {
+                id: 20,
+                category: "ahorro",
+                title: "Iluminación Estratégica",
+                content: "Reemplazar 10 focos 60W por LED 9W ahorra: (60-9)W × 10 × 5h × 30d ÷ 1000 = 76.5 kWh = $9,180 anuales.",
+                icon: "💡",
+                color: "green"
+            },
+
+            // Categoría: Eficiencia (10)
+            {
+                id: 21,
+                category: "eficiencia",
+                title: "Eficiencia por Diseño",
+                content: "Lavadora moderna consume 50% menos que una de 10 años: De 500W a 250W por ciclo = ahorro de $18,000 anuales con uso diario.",
+                icon: "👕",
+                color: "purple"
+            },
+            {
+                id: 22,
+                category: "eficiencia",
+                title: "Refrigeración Inteligente",
+                content: "Refrigerador inverter vs convencional ahorra 40%: De 150W a 90W promedio = (60W × 24h × 30d) ÷ 1000 = 43.2 kWh = $5,184 anuales.",
+                icon: "❄️",
+                color: "purple"
+            },
+            {
+                id: 23,
+                category: "eficiencia",
+                title: "Climatización Optimizada",
+                content: "Aire acondicionado inverter ajusta potencia según necesidad, ahorrando hasta 30% vs modelos on/off tradicionales.",
+                icon: "🌬️",
+                color: "purple"
+            },
+            {
+                id: 24,
+                category: "eficiencia",
+                title: "Ventilación Natural",
+                content: "Usar ventilador (75W) vs aire acondicionado (1500W) 4h/día ahorra: (1500-75)W × 4h × 30d ÷ 1000 = 171 kWh = $20,520 anuales.",
+                icon: "🌀",
+                color: "purple"
+            },
+            {
+                id: 25,
+                category: "eficiencia",
+                title: "Cocina Eficiente",
+                content: "Olla a presión reduce tiempo cocción 70%, ahorrando: 1500W × 1h × 0.7 × 20d/mes = 21 kWh = $2,520 anuales.",
+                icon: "🍳",
+                color: "purple"
+            },
+            {
+                id: 26,
+                category: "eficiencia",
+                title: "Lavado en Frío",
+                content: "Lavar con agua fría vs caliente ahorra 90% energía calentamiento: 2000W × 1h × 0.9 × 12 veces/mes = 21.6 kWh = $2,592 anuales.",
+                icon: "🧼",
+                color: "purple"
+            },
+            {
+                id: 27,
+                category: "eficiencia",
+                title: "Secado Natural",
+                content: "Tender ropa vs secadora (3000W) 2h/semana ahorra: 3000W × 2h × 4semanas ÷ 1000 = 24 kWh = $2,880 anuales.",
+                icon: "☀️",
+                color: "purple"
+            },
+            {
+                id: 28,
+                category: "eficiencia",
+                title: "Computación Verde",
+                content: "Modo suspensión vs encendido continuo ahorra 95%: 150W × 20h × 0.95 × 30d ÷ 1000 = 85.5 kWh = $10,260 anuales.",
+                icon: "💻",
+                color: "purple"
+            },
+            {
+                id: 29,
+                category: "eficiencia",
+                title: "Iluminación Direccional",
+                content: "Lámparas LED direccionales vs iluminación general ahorran 60%: De 100W a 40W por zona = $7,200 anuales en hogar promedio.",
+                icon: "🎯",
+                color: "purple"
+            },
+            {
+                id: 30,
+                category: "eficiencia",
+                title: "Aislamiento Térmico",
+                content: "Ventanas doble vidrio reducen 30% uso calefacción/refrigeración, ahorrando hasta $45,000 anuales en clima extremo.",
+                icon: "🪟",
+                color: "purple"
+            },
+
+            // Categoría: Tecnología (10)
+            {
+                id: 31,
+                category: "tecnologia",
+                title: "Domótica Inteligente",
+                content: "Programadores automáticos pueden ahorrar 15% consumo total apagando electrodomésticos automáticamente.",
+                icon: "🤖",
+                color: "orange"
+            },
+            {
+                id: 32,
+                category: "tecnologia",
+                title: "Paneles Solares",
+                content: "Instalación solar de 3kW genera ~450 kWh/mes, cubriendo 100% necesidades hogar promedio y ahorrando $54,000 mensuales.",
+                icon: "☀️",
+                color: "orange"
+            },
+            {
+                id: 33,
+                category: "tecnologia",
+                title: "Termostatos Inteligentes",
+                content: "Ajuste automático de temperatura puede ahorrar 10-12% calefacción y 15% refrigeración = $30,000 anuales promedio.",
+                icon: "🌡️",
+                color: "orange"
+            },
+            {
+                id: 34,
+                category: "tecnologia",
+                title: "Monitores de Energía",
+                content: "Dispositivos que miden consumo en tiempo real ayudan a identificar fugas, potencialmente ahorrando 5-15% factura mensual.",
+                icon: "📊",
+                color: "orange"
+            },
+            {
+                id: 35,
+                category: "tecnologia",
+                title: "Baterías de Reserva",
+                content: "Sistemas de almacenamiento permiten usar energía solar nocturna, aumentando autosuficiencia hasta 80%.",
+                icon: "🔋",
+                color: "orange"
+            },
+            {
+                id: 36,
+                category: "tecnologia",
+                title: "Enchufes Inteligentes",
+                content: "Control remoto de electrodomésticos puede ahorrar 5-10% eliminando consumos fantasmas = $6,000-$12,000 anuales.",
+                icon: "🔌",
+                color: "orange"
+            },
+            {
+                id: 37,
+                category: "tecnologia",
+                title: "Vehiculos Eléctricos",
+                content: "Cargar EV en casa (30 kWh/100km) vs gasolina ($10,000/100km) ahorra $7,000 por cada 100km recorridos.",
+                icon: "🚗",
+                color: "orange"
+            },
+            {
+                id: 38,
+                category: "tecnologia",
+                title: "Gestión de Demanda",
+                content: "Sistemas que desplazan consumo a horas valle pueden ahorrar 20-30% en tarifas con discriminación horaria.",
+                icon: "⏰",
+                color: "orange"
+            },
+            {
+                id: 39,
+                category: "tecnologia",
+                title: "IoT en el Hogar",
+                content: "Red de sensores que optimizan climatización e iluminación puede reducir consumo general 8-12% automáticamente.",
+                icon: "📡",
+                color: "orange"
+            },
+            {
+                id: 40,
+                category: "tecnologia",
+                title: "Bombas de Calor",
+                content: "Sistemas modernos de climatización con COP 3-4 producen 3-4 veces más energía térmica que la eléctrica que consumen.",
+                icon: "🔥",
+                color: "orange"
+            },
+
+            // 10 datos adicionales variados
+            {
+                id: 41,
+                category: "matematica",
+                title: "Rendimiento Decreciente",
+                content: "Primera medida de ahorro ahorra 20%, segunda 15%, tercera 10%. La ley de rendimientos decrecientes también aplica en eficiencia energética.",
+                icon: "📉",
+                color: "blue"
+            },
+            {
+                id: 42,
+                category: "ahorro",
+                title: "Ahorro Acumulativo",
+                content: "Si ahorras $5,000 mensuales en electricidad, en 10 años tendrías $600,000 + intereses si lo inviertes = ¡Un departamento pequeño!",
+                icon: "💰",
+                color: "green"
+            },
+            {
+                id: 43,
+                category: "eficiencia",
+                title: "Eficiencia de Escala",
+                content: "Familia de 4 gasta 30% menos per cápita que persona viviendo sola: $60,000 vs $85,000 mensuales por persona.",
+                icon: "👨‍👩‍👧‍👦",
+                color: "purple"
+            },
+            {
+                id: 44,
+                category: "tecnologia",
+                title: "Blockchain Energético",
+                content: "Sistemas P2P de intercambio de energía pueden reducir costos 15-25% mediante compra/venta directa entre vecinos.",
+                icon: "⛓️",
+                color: "orange"
+            },
+            {
+                id: 45,
+                category: "matematica",
+                title: "Curva de Aprendizaje",
+                content: "Tras instalar paneles solares, usuarios optimizan consumo naturalmente, aumentando autosuficiencia 15% en primer año.",
+                icon: "📚",
+                color: "blue"
+            },
+            {
+                id: 46,
+                category: "ahorro",
+                title: "Impacto Ambiental",
+                content: "Ahorrar 100 kWh evita ~84 kg CO2 = plantar 4 árboles. Tu ahorro mensual podría equivaler a un bosque pequeño anual.",
+                icon: "🌳",
+                color: "green"
+            },
+            {
+                id: 47,
+                category: "eficiencia",
+                title: "Eficiencia Horaria",
+                content: "Usar lavadora/lavavajillas después de 18:00 ahorra 25% vs horario punta en tarifas con discriminación horaria.",
+                icon: "🌙",
+                color: "purple"
+            },
+            {
+                id: 48,
+                category: "tecnologia",
+                title: "Realidad Virtual",
+                content: "Simuladores de consumo permiten probar cambios antes de implementarlos, optimizando decisiones de eficiencia.",
+                icon: "👓",
+                color: "orange"
+            },
+            {
+                id: 49,
+                category: "matematica",
+                title: "Algoritmos Predictivos",
+                content: "IA puede predecir tu consumo con 95% precisión, identificando oportunidades de ahorro que humanos pasarían por alto.",
+                icon: "🤔",
+                color: "blue"
+            },
+            {
+                id: 50,
+                category: "ahorro",
+                title: "Retorno de Inversión",
+                content: "Invertir $300,000 en eficiencia energética típicamente retorna $600,000 en 5 años = 100% ROI + beneficio ambiental.",
+                icon: "📈",
+                color: "green"
+            }
+        ];
+
+        // Variables de estado
+        let currentFilter = 'all';
+        let currentSearch = '';
+        let visibleFacts = 12;
+        let allFacts = [...factsData];
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            renderFacts();
+            setupEventListeners();
+            updateStats();
+        }
+
+        function setupEventListeners() {
+            // Filtros por categoría
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    currentFilter = this.dataset.category;
+                    document.querySelectorAll('.filter-btn').forEach(b => {
+                        b.classList.remove('bg-blue-500', 'text-white');
+                        b.classList.add('bg-gray-100', 'dark:bg-gray-700', 'text-gray-800', 'dark:text-gray-200');
+                    });
+                    this.classList.remove('bg-gray-100', 'dark:bg-gray-700', 'text-gray-800', 'dark:text-gray-200');
+                    this.classList.add('bg-blue-500', 'text-white');
+                    renderFacts();
+                });
+            });
+
+            // Búsqueda
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                currentSearch = e.target.value.toLowerCase();
+                renderFacts();
+            });
+
+            // Cargar más
+            document.getElementById('loadMoreBtn').addEventListener('click', function() {
+                visibleFacts += 12;
+                renderFacts();
+            });
+
+            // Tema oscuro/claro
+            document.getElementById('themeToggle').addEventListener('click', function() {
+                document.documentElement.classList.toggle('dark');
+                const icon = this.querySelector('i');
+                if (document.documentElement.classList.contains('dark')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
+        }
+
+        function renderFacts() {
+            const container = document.getElementById('factsContainer');
+            let filteredFacts = allFacts;
+
+            // Aplicar filtros
+            if (currentFilter !== 'all') {
+                filteredFacts = filteredFacts.filter(fact => fact.category === currentFilter);
+            }
+
+            // Aplicar búsqueda
+            if (currentSearch) {
+                filteredFacts = filteredFacts.filter(fact => 
+                    fact.title.toLowerCase().includes(currentSearch) || 
+                    fact.content.toLowerCase().includes(currentSearch)
+                );
+            }
+
+            // Limitar a facts visibles
+            const factsToShow = filteredFacts.slice(0, visibleFacts);
+
+            // Renderizar
+            container.innerHTML = factsToShow.map(fact => `
+                <div class="fact-card bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6" data-category="${fact.category}">
+                    <div class="flex items-start mb-4">
+                        <div class="bg-${fact.color}-100 dark:bg-${fact.color}-900 p-3 rounded-lg mr-4">
+                            <span class="text-2xl">${fact.icon}</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800 dark:text-white text-lg mb-2">${highlightSearch(fact.title)}</h3>
+                            <span class="inline-block px-2 py-1 text-xs rounded-full bg-${fact.color}-100 dark:bg-${fact.color}-900 text-${fact.color}-800 dark:text-${fact.color}-200 capitalize">
+                                ${fact.category}
+                            </span>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                        ${highlightSearch(fact.content)}
+                    </p>
+                    <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">Dato #${fact.id}</span>
+                        <button class="share-btn text-${fact.color}-600 dark:text-${fact.color}-400 hover:text-${fact.color}-700 dark:hover:text-${fact.color}-300" data-fact="${fact.id}">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Configurar botones de compartir
+            document.querySelectorAll('.share-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const factId = this.dataset.fact;
+                    shareFact(factId);
+                });
+            });
+
+            // Ocultar/mostrar botón de cargar más
+            document.getElementById('loadMoreBtn').style.display = 
+                factsToShow.length < filteredFacts.length ? 'block' : 'none';
+
+            updateStats();
+        }
+
+        function highlightSearch(text) {
+            if (!currentSearch) return text;
+            const regex = new RegExp(`(${currentSearch})`, 'gi');
+            return text.replace(regex, '<span class="search-highlight">$1</span>');
+        }
+
+        function shareFact(factId) {
+            const fact = allFacts.find(f => f.id == factId);
+            if (navigator.share) {
+                navigator.share({
+                    title: `Voltify Pro - ${fact.title}`,
+                    text: fact.content,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback para navegadores que no soportan Web Share API
+                const text = `${fact.title}: ${fact.content}`;
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('¡Dato copiado al portapapeles!');
+                });
+            }
+        }
+
+        function updateStats() {
+            const filteredFacts = allFacts.filter(fact => {
+                const matchesFilter = currentFilter === 'all' || fact.category === currentFilter;
+                const matchesSearch = !currentSearch || 
+                    fact.title.toLowerCase().includes(currentSearch) || 
+                    fact.content.toLowerCase().includes(currentSearch);
+                return matchesFilter && matchesSearch;
+            });
+
+            document.getElementById('totalFacts').textContent = allFacts.length;
+            document.getElementById('visibleFacts').textContent = Math.min(visibleFacts, filteredFacts.length);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,615 @@
+{% extends 'mi_app/base.html' %}
+{% load static %}
+
+{% block title %}Calcular Consumo Individual - Voltify Pro{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <div class="flex items-center">
+                <a href="{% url 'inicio' %}" class="flex items-center group">
+                    <div class="text-2xl mr-2 transition-transform group-hover:scale-110">⚡</div>
+                    <div class="text-xl font-bold text-gray-800 dark:text-white">Voltify <span class="text-blue-600">Pro</span></div>
+                </a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="{% url 'inicio' %}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header Section -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">
+            Calcular Consumo Individual
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300">
+            Calcula el consumo específico de un electrodoméstico
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        <!-- Formulario de Cálculo -->
+        <div class="xl:col-span-1">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 sticky top-8">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6">
+                    Datos del Electrodoméstico
+                </h2>
+
+                <!-- Información de Servicio Eléctrico -->
+                <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-3">
+                        ⚡ Configuración de Servicio Eléctrico
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <span class="text-blue-700 dark:text-blue-300 font-medium">Compañía:</span>
+                            <span id="displayCompania" class="text-blue-800 dark:text-blue-200 ml-2">-</span>
+                        </div>
+                        <div>
+                            <span class="text-blue-700 dark:text-blue-300 font-medium">Potencia Contratada:</span>
+                            <span id="displayPotencia" class="text-blue-800 dark:text-blue-200 ml-2">- kW</span>
+                        </div>
+                        <div>
+                            <span class="text-blue-700 dark:text-blue-300 font-medium">Cargo Fijo:</span>
+                            <span id="displayCargoFijo" class="text-blue-800 dark:text-blue-200 ml-2">$ -/mes</span>
+                        </div>
+                        <div>
+                            <span class="text-blue-700 dark:text-blue-300 font-medium">Precio kWh:</span>
+                            <span id="displayPrecioKwh" class="text-blue-800 dark:text-blue-200 ml-2">$ -</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Datos del Electrodoméstico -->
+                <div class="space-y-6">
+                    <!-- Nombre del Electrodoméstico -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                            Nombre del Electrodoméstico
+                        </label>
+                        <input type="text" 
+                               id="nombreElectrodomestico"
+                               placeholder="Ej: Refrigerador, Televisor, Lavadora..."
+                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+
+                    <!-- Potencia -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                            Potencia (Watts)
+                        </label>
+                        <div class="flex items-center space-x-4">
+                            <input type="number" 
+                                   id="potenciaWatts"
+                                   step="10"
+                                   min="1"
+                                   max="5000"
+                                   placeholder="Ej: 150"
+                                   class="w-32 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <span class="text-gray-600 dark:text-gray-400 text-sm">Watts</span>
+                        </div>
+                    </div>
+
+                    <!-- Categoría -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                            Categoría
+                        </label>
+                        <select id="categoriaSelect" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="">Selecciona una categoría...</option>
+                            <option value="climatizacion">Climatización</option>
+                            <option value="iluminacion">Iluminación</option>
+                            <option value="linea_blanca">Línea Blanca</option>
+                            <option value="tecnologia">Tecnología</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
+
+                    <!-- Cantidad -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                            Cantidad
+                        </label>
+                        <div class="flex items-center space-x-4">
+                            <input type="number" 
+                                   id="cantidadElectrodomestico"
+                                   step="1"
+                                   min="1"
+                                   max="10"
+                                   value="1"
+                                   class="w-32 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <span class="text-gray-600 dark:text-gray-400 text-sm">unidades</span>
+                        </div>
+                    </div>
+
+                    <!-- Horas de Uso Diario -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                            Horas de Uso Diario
+                        </label>
+                        <div class="flex items-center space-x-4">
+                            <input type="number" 
+                                   id="horasUsoDiario"
+                                   step="0.5"
+                                   min="0"
+                                   max="24"
+                                   value="4"
+                                   class="w-32 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <span class="text-gray-600 dark:text-gray-400 text-sm">horas/día</span>
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Máximo 24 horas por día</p>
+                    </div>
+
+                    <!-- Días de Uso Mensual -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                            Días de Uso Mensual
+                        </label>
+                        <div class="flex items-center space-x-4">
+                            <input type="number" 
+                                   id="diasUsoMensual"
+                                   step="1"
+                                   min="1"
+                                   max="31"
+                                   value="30"
+                                   class="w-32 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <span class="text-gray-600 dark:text-gray-400 text-sm">días/mes</span>
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Máximo 31 días por mes</p>
+                    </div>
+
+                    <!-- Botón Calcular -->
+                    <button id="btnCalcular" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg font-semibold text-lg transition-colors duration-300 flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        Calcular Consumo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Central: Resultados y ¿Sabías que...? -->
+        <div class="xl:col-span-2">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Resultados -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+                        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
+                            📊 Resultados del Cálculo
+                        </h2>
+
+                        <!-- Resultados Principales -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <!-- Total Estimado en kWh -->
+                            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-blue-800 dark:text-blue-200 font-semibold">Consumo Total Estimado</span>
+                                    <span id="totalKwh" class="text-2xl font-bold text-blue-600 dark:text-blue-400">-</span>
+                                </div>
+                                <p class="text-blue-700 dark:text-blue-300 text-sm">kilowatt-hora (kWh) mensuales</p>
+                            </div>
+
+                            <!-- Total Estimado a Pagar -->
+                            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-green-800 dark:text-green-200 font-semibold">Costo Total Estimado</span>
+                                    <span id="totalPagar" class="text-2xl font-bold text-green-600 dark:text-green-400">-</span>
+                                </div>
+                                <p class="text-green-700 dark:text-green-300 text-sm">pesos chilenos (CLP) mensuales</p>
+                            </div>
+                        </div>
+
+                        <!-- Aclaración del costo -->
+                        <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
+                            <div class="text-center">
+                                <p class="text-yellow-700 dark:text-yellow-300 text-sm">
+                                    ⚠️ No se ve reflejada la suma del cargo fijo, solo el gasto del electrodoméstico
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Desglose del Cálculo -->
+                        <div class="mb-6">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                🔍 Desglose del Cálculo
+                            </h3>
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 space-y-3">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600 dark:text-gray-400">Potencia total:</span>
+                                    <span id="desglosePotencia" class="text-gray-800 dark:text-gray-200 font-medium">- W</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600 dark:text-gray-400">Consumo diario:</span>
+                                    <span id="desgloseConsumoDiario" class="text-gray-800 dark:text-gray-200 font-medium">- kWh/día</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600 dark:text-gray-400">Días de uso:</span>
+                                    <span id="desgloseDiasUso" class="text-gray-800 dark:text-gray-200 font-medium">- días/mes</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600 dark:text-gray-400">Costo por kWh:</span>
+                                    <span id="desgloseCostoKwh" class="text-gray-800 dark:text-gray-200 font-medium">$ -</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Información del Electrodoméstico -->
+                        <div class="mb-6">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                🏷️ Información del Electrodoméstico
+                            </h3>
+                            <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
+                                <div id="infoElectrodomestico" class="text-center">
+                                    <p class="text-purple-700 dark:text-purple-300 text-sm">
+                                        Ingresa los datos del electrodoméstico y haz clic en calcular
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Consejos de Ahorro -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                💡 Consejos de Ahorro
+                            </h3>
+                            <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">•</span>
+                                    Usa electrodomésticos eficientes (etiqueta A+++)
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">•</span>
+                                    Programa el uso en horas de menor demanda
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">•</span>
+                                    Desconecta los aparatos que no estés usando
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel de Información - "¿Sabías que...?" -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+                        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
+                            💡 ¿Sabías que...?
+                        </h2>
+
+                        <!-- Información Específica para Consumo Individual -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Potencia vs Consumo -->
+                            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                                <div class="flex items-start">
+                                    <div class="bg-blue-100 dark:bg-blue-800 p-2 rounded-lg mr-3">
+                                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">Fórmula Mágica</h3>
+                                        <p class="text-blue-700 dark:text-blue-300 text-sm">
+                                            Tu consumo mensual se calcula así: (Watts × Horas × Días) ÷ 1000 = kWh. 
+                                            Un televisor de 100W usado 4h/día × 30 días = (100×4×30)÷1000 = 12 kWh = $1,440. 
+                                            ¡Las matemáticas no mienten!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Horas de Uso -->
+                            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                                <div class="flex items-start">
+                                    <div class="bg-green-100 dark:bg-green-800 p-2 rounded-lg mr-3">
+                                        <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-green-800 dark:text-green-200 mb-2">Ley del Tiempo</h3>
+                                        <p class="text-green-700 dark:text-green-300 text-sm">
+                                            Reducir 1 hora diaria de uso en un aire acondicionado de 1500W ahorra: 
+                                            (1500W × 1h × 30d) ÷ 1000 = 45 kWh = $5,400 mensuales. 
+                                            ¡Es como obtener 3 meses gratis al año!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Electrodomésticos Eficientes -->
+                            <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+                                <div class="flex items-start">
+                                    <div class="bg-purple-100 dark:bg-purple-800 p-2 rounded-lg mr-3">
+                                        <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-purple-800 dark:text-purple-200 mb-2">Eficiencia Exponencial</h3>
+                                        <p class="text-purple-700 dark:text-purple-300 text-sm">
+                                            Un refrigerador eficiente (150W) vs uno antiguo (300W) ahorra: 
+                                            (300-150)W × 24h × 30d ÷ 1000 = 108 kWh/mes = $12,960 anuales. 
+                                            ¡En 2 años pagas el nuevo refrigerador con el ahorro!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mantenimiento -->
+                            <div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
+                                <div class="flex items-start">
+                                    <div class="bg-orange-100 dark:bg-orange-800 p-2 rounded-lg mr-3">
+                                        <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-orange-800 dark:text-orange-200 mb-2">Matemáticas del Mantenimiento</h3>
+                                        <p class="text-orange-700 dark:text-orange-300 text-sm">
+                                            Un aire acondicionado sucio consume 20% más: De 1200W a 1440W. 
+                                            Eso son (240W × 4h × 30d) ÷ 1000 = 28.8 kWh extra = $3,456 mensuales. 
+                                            ¡El mantenimiento cuesta menos que el derroche!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botón Más Datos Curiosos -->
+                        <div class="text-center mt-6">
+                            <a href="{% url 'sabias_que' %}" class="inline-block bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                                🧠 Más Datos Curiosos
+                            </a>
+                        </div>
+
+                        <!-- Datos Adicionales (ocultos inicialmente) -->
+                        <div id="datosAdicionalesIndividual" class="hidden mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Dato Adicional 1 -->
+                            <div class="bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800 rounded-lg p-4">
+                                <div class="flex items-start">
+                                    <div class="bg-cyan-100 dark:bg-cyan-800 p-2 rounded-lg mr-3">
+                                        <span class="text-cyan-600 dark:text-cyan-400 text-lg">🔋</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-cyan-800 dark:text-cyan-200 mb-2">Energía Potencial</h3>
+                                        <p class="text-cyan-700 dark:text-cyan-300 text-sm">
+                                            La energía que consume un microondas (1000W) en 1 minuto (0.0167 kWh) 
+                                            podría cargar un smartphone 3 veces completas. ¡Eficiencia convertida en matemáticas!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dato Adicional 2 -->
+                            <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                                <div class="flex items-start">
+                                    <div class="bg-amber-100 dark:bg-amber-800 p-2 rounded-lg mr-3">
+                                        <span class="text-amber-600 dark:text-amber-400 text-lg">⚡</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-amber-800 dark:text-amber-200 mb-2">Costo Oculto</h3>
+                                        <p class="text-amber-700 dark:text-amber-300 text-sm">
+                                            Un cargador de laptop dejado conectado (5W) 24/7 consume: 
+                                            5W × 24h × 30d ÷ 1000 = 3.6 kWh = $432 mensuales. 
+                                            ¡Pequeños vampiros energéticos suman grandes cantidades!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-8 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="flex items-center justify-center mb-4">
+            <div class="text-2xl mr-2">⚡</div>
+            <div class="text-xl font-bold">Voltify Pro</div>
+        </div>
+        <p class="text-gray-400">
+            Control de energía inteligente para hogares chilenos
+        </p>
+        <div class="mt-4 text-sm text-gray-400">
+            <p>&copy; 2025 Voltify Pro. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Elementos del formulario
+        const nombreElectrodomestico = document.getElementById('nombreElectrodomestico');
+        const potenciaWatts = document.getElementById('potenciaWatts');
+        const categoriaSelect = document.getElementById('categoriaSelect');
+        const cantidadElectrodomestico = document.getElementById('cantidadElectrodomestico');
+        const horasUsoDiario = document.getElementById('horasUsoDiario');
+        const diasUsoMensual = document.getElementById('diasUsoMensual');
+        const btnCalcular = document.getElementById('btnCalcular');
+
+        // Elementos de visualización de servicio eléctrico
+        const displayCompania = document.getElementById('displayCompania');
+        const displayPotencia = document.getElementById('displayPotencia');
+        const displayCargoFijo = document.getElementById('displayCargoFijo');
+        const displayPrecioKwh = document.getElementById('displayPrecioKwh');
+
+        // Elementos de resultados
+        const totalKwh = document.getElementById('totalKwh');
+        const totalPagar = document.getElementById('totalPagar');
+        const desglosePotencia = document.getElementById('desglosePotencia');
+        const desgloseConsumoDiario = document.getElementById('desgloseConsumoDiario');
+        const desgloseDiasUso = document.getElementById('desgloseDiasUso');
+        const desgloseCostoKwh = document.getElementById('desgloseCostoKwh');
+        const infoElectrodomestico = document.getElementById('infoElectrodomestico');
+
+        // Botón Más Datos Curiosos
+        const btnMasDatosIndividual = document.getElementById('btnMasDatosIndividual');
+        const datosAdicionalesIndividual = document.getElementById('datosAdicionalesIndividual');
+
+        // Función para obtener el ID del usuario actual
+        function getCurrentUserId() {
+            return '{{ user.username|default:"anonymous" }}';
+        }
+
+        // Cargar configuración del servicio eléctrico
+        cargarConfiguracionServicio();
+
+        // Calcular consumo
+        btnCalcular.addEventListener('click', calcularConsumo);
+
+        // Botón Más Datos Curiosos
+        if (btnMasDatosIndividual) {
+            btnMasDatosIndividual.addEventListener('click', function() {
+                datosAdicionalesIndividual.classList.toggle('hidden');
+                if (datosAdicionalesIndividual.classList.contains('hidden')) {
+                    btnMasDatosIndividual.textContent = '🧠 Más Datos Curiosos';
+                } else {
+                    btnMasDatosIndividual.textContent = '🙈 Menos Datos';
+                }
+            });
+        }
+
+        // AGREGAR: Validaciones en tiempo real para horas y días
+        horasUsoDiario.addEventListener('change', validarHoras);
+        horasUsoDiario.addEventListener('input', validarHoras);
+        diasUsoMensual.addEventListener('change', validarDias);
+        diasUsoMensual.addEventListener('input', validarDias);
+
+        function validarHoras() {
+            const horas = parseFloat(horasUsoDiario.value);
+            if (horas < 0) {
+                horasUsoDiario.value = 0;
+            }
+            if (horas > 24) {
+                horasUsoDiario.value = 24;
+            }
+        }
+
+        function validarDias() {
+            const dias = parseInt(diasUsoMensual.value);
+            if (dias < 1) {
+                diasUsoMensual.value = 1;
+            }
+            if (dias > 31) {
+                diasUsoMensual.value = 31;
+            }
+        }
+
+        function cargarConfiguracionServicio() {
+            const userId = getCurrentUserId();
+            const configGuardada = localStorage.getItem(`voltify_configuracion_${userId}`);
+            if (configGuardada) {
+                const config = JSON.parse(configGuardada);
+                
+                // Mostrar información del servicio eléctrico
+                displayCompania.textContent = config.compania ? obtenerNombreCompania(config.compania) : 'No configurada';
+                displayPotencia.textContent = config.potencia ? `${config.potencia} kW` : '- kW';
+                displayCargoFijo.textContent = config.cargoFijo ? `$${parseInt(config.cargoFijo).toLocaleString()}/mes` : '$ -/mes';
+                displayPrecioKwh.textContent = config.precioKwh ? `$${parseInt(config.precioKwh).toLocaleString()}` : '$ -';
+            } else {
+                displayCompania.textContent = 'No configurada';
+                displayPotencia.textContent = '- kW';
+                displayCargoFijo.textContent = '$ -/mes';
+                displayPrecioKwh.textContent = '$ -';
+            }
+        }
+
+        function obtenerNombreCompania(codigo) {
+            const companias = {
+                'enel': 'Enel Distribución',
+                'chilquinta': 'Chilquinta Energía',
+                'frontel': 'Frontel',
+                'saesa': 'Saesa',
+                'cge': 'CGE',
+                'lit': 'Luz del Sur (LIT)',
+                'other': 'Otra compañía'
+            };
+            return companias[codigo] || codigo;
+        }
+
+        function calcularConsumo() {
+            // Validar campos obligatorios
+            if (!nombreElectrodomestico.value.trim()) {
+                alert('Por favor ingresa el nombre del electrodoméstico');
+                return;
+            }
+
+            if (!potenciaWatts.value || potenciaWatts.value <= 0) {
+                alert('Por favor ingresa una potencia válida');
+                return;
+            }
+
+            if (!categoriaSelect.value) {
+                alert('Por favor selecciona una categoría');
+                return;
+            }
+
+            // Obtener valores del formulario
+            const potencia = parseFloat(potenciaWatts.value);
+            const cantidad = parseInt(cantidadElectrodomestico.value);
+            const horasDiarias = parseFloat(horasUsoDiario.value);
+            const diasMensuales = parseInt(diasUsoMensual.value);
+
+            // Obtener configuración del servicio eléctrico
+            const userId = getCurrentUserId();
+            const config = JSON.parse(localStorage.getItem(`voltify_configuracion_${userId}`) || '{}');
+            const precioKwh = parseFloat(config.precioKwh) || 120; // Valor por defecto
+
+            // Cálculos
+            const potenciaTotal = potencia * cantidad; // Watts totales
+            const consumoDiarioKwh = (potenciaTotal * horasDiarias) / 1000; // kWh por día
+            const consumoMensualKwh = consumoDiarioKwh * diasMensuales; // kWh por mes
+            const costoEnergia = consumoMensualKwh * precioKwh; // Costo solo de energía
+
+            // Mostrar resultados
+            totalKwh.textContent = consumoMensualKwh.toFixed(2);
+            totalPagar.textContent = `$${Math.round(costoEnergia).toLocaleString()}`;
+
+            // Mostrar desglose
+            desglosePotencia.textContent = `${potenciaTotal.toLocaleString()} W`;
+            desgloseConsumoDiario.textContent = `${consumoDiarioKwh.toFixed(2)} kWh/día`;
+            desgloseDiasUso.textContent = `${diasMensuales} días/mes`;
+            desgloseCostoKwh.textContent = `$${precioKwh.toLocaleString()}`;
+
+            // Mostrar información del electrodoméstico
+            const categoriaNombres = {
+                'climatizacion': 'Climatización',
+                'iluminacion': 'Iluminación',
+                'linea_blanca': 'Línea Blanca',
+                'tecnologia': 'Tecnología',
+                'otros': 'Otros'
+            };
+
+            infoElectrodomestico.innerHTML = `
+                <div class="text-left">
+                    <p class="text-purple-800 dark:text-purple-200 font-semibold">${nombreElectrodomestico.value}</p>
+                    <p class="text-purple-700 dark:text-purple-300 text-sm">Categoría: ${categoriaNombres[categoriaSelect.value]}</p>
+                    <p class="text-purple-700 dark:text-purple-300 text-sm">Cantidad: ${cantidad} unidad(es)</p>
+                    <p class="text-purple-700 dark:text-purple-300 text-sm">Uso: ${horasDiarias}h/día × ${diasMensuales}días/mes</p>
+                </div>
+            `;
+        }
+
+        // Sincronizar cambios en la configuración del servicio
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'voltify_configuracion') {
+                cargarConfiguracionServicio();
+            }
+        });
+    });
+</script>
+{% endblock %}
