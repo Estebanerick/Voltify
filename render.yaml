@@ -1,21 +1,21 @@
 services:
   - type: web
-    name: voltify-django
+    name: voltify
     env: python
     plan: free
-    buildCommand: "./build.sh"
+    buildCommand: "pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --no-input"
     startCommand: "gunicorn Voltify.wsgi:application"
     envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "false"
+      - key: PYTHON_VERSION
+        value: "3.11.0"
       - key: DATABASE_URL
         fromDatabase:
           name: voltify-db
           property: connectionString
-      - key: SECRET_KEY
-        generateValue: true
-      - key: DEBUG
-        value: false
-      - key: WEB_CONCURRENCY
-        value: 4
 
 databases:
   - name: voltify-db
